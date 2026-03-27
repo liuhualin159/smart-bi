@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>smart-bi</artifactId>
+        <groupId>dev.lhl</groupId>
+        <version>3.9.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>smart-bi-push</artifactId>
+    <description>报表订阅与推送模块</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>dev.lhl</groupId>
+            <artifactId>smart-bi-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>dev.lhl</groupId>
+            <artifactId>smart-bi-quartz</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+        </dependency>
+    </dependencies>
+</project>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.lhl.query.mapper.FeedbackMapper">
+    <resultMap type="Feedback" id="FeedbackResult">
+        <result property="id" column="id" />
+        <result property="queryId" column="query_id" />
+        <result property="userId" column="user_id" />
+        <result property="feedbackType" column="feedback_type" />
+        <result property="content" column="content" />
+        <result property="suggestedSql" column="suggested_sql" />
+        <result property="reviewStatus" column="review_status" />
+        <result property="reviewComment" column="review_comment" />
+        <result property="reviewer" column="reviewer" />
+        <result property="reviewTime" column="review_time" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+        <result property="remark" column="remark" />
+    </resultMap>
+    <sql id="selectFeedbackVo">
+        select id, query_id, user_id, feedback_type, content, suggested_sql, 
+               review_status, review_comment, reviewer, review_time,
+               create_by, create_time, update_by, update_time, remark 
+        from bi_query_feedback
+    </sql>
+    <select id="selectFeedbackList" parameterType="Feedback" resultMap="FeedbackResult">
+        <include refid="selectFeedbackVo"/>
+        <where>
+            <if test="queryId != null">and query_id = #{queryId}</if>
+            <if test="userId != null">and user_id = #{userId}</if>
+            <if test="feedbackType != null and feedbackType != ''">and feedback_type = #{feedbackType}</if>
+            <if test="reviewStatus != null and reviewStatus != ''">and review_status = #{reviewStatus}</if>
+        </where>
+        order by create_time desc
+    </select>
+    <select id="selectFeedbackById" parameterType="Long" resultMap="FeedbackResult">
+        <include refid="selectFeedbackVo"/>
+        where id = #{id}
+    </select>
+    <insert id="insertFeedback" parameterType="Feedback" useGeneratedKeys="true" keyProperty="id">
+        insert into bi_query_feedback
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="queryId != null">query_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="feedbackType != null and feedbackType != ''">feedback_type,</if>
+            <if test="content != null">content,</if>
+            <if test="suggestedSql != null">suggested_sql,</if>
+            <if test="reviewStatus != null and reviewStatus != ''">review_status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="queryId != null">#{queryId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="feedbackType != null and feedbackType != ''">#{feedbackType},</if>
+            <if test="content != null">#{content},</if>
+            <if test="suggestedSql != null">#{suggestedSql},</if>
+            <if test="reviewStatus != null and reviewStatus != ''">#{reviewStatus},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+    <update id="updateFeedback" parameterType="Feedback">
+        update bi_query_feedback
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="reviewStatus != null and reviewStatus != ''">review_status = #{reviewStatus},</if>
+            <if test="reviewComment != null">review_comment = #{reviewComment},</if>
+            <if test="reviewer != null">reviewer = #{reviewer},</if>
+            <if test="reviewTime != null">review_time = #{reviewTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <delete id="deleteFeedbackById" parameterType="Long">
+        delete from bi_query_feedback where id = #{id}
+    </delete>
+    <delete id="deleteFeedbackByIds" parameterType="String">
+        delete from bi_query_feedback where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

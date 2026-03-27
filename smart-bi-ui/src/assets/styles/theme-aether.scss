@@ -1,0 +1,231 @@
+/* Aether / home_screen_modernized 深色壳层：侧栏、顶栏、标签栏、主区背景 */
+
+:root {
+  --navbar-height: 50px;
+  --tags-view-height: 40px;
+}
+
+html.dark {
+  --navbar-height: 64px;
+  --tags-view-height: 40px;
+}
+
+html.dark #app {
+  .main-container {
+    background: var(--main-container-bg, #0a0e17);
+  }
+
+  /* 侧栏玻璃 + 青边（设计稿） */
+  .sidebar-container.aether-sidebar {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 0 0; /* py-8 与稿一致 */
+    border-right: 1px solid var(--sidebar-border);
+    box-shadow: 20px 0 50px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    &.has-logo .el-scrollbar {
+      height: auto !important;
+      flex: 1;
+      min-height: 0;
+    }
+  }
+
+  /* 顶栏：设计稿 tonal-shift-bg + backdrop-blur */
+  .navbar.navbar--aether {
+    height: var(--navbar-height);
+    background: linear-gradient(to bottom, rgba(15, 19, 28, 0.85), rgba(10, 14, 23, 0.96)), var(--navbar-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--navbar-border);
+    box-shadow: none;
+  }
+
+  /* 第二行：设计稿 sticky 标签条 — slate-950/40 + blur + px-6 py-2 */
+  .tags-view-container.tags-view--aether {
+    height: auto !important;
+    min-height: var(--tags-view-height);
+    padding: 0.5rem 1.5rem;
+    background: rgba(2, 6, 23, 0.4) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: none;
+  }
+
+  .tags-view-container.tags-view--aether .tags-view-wrapper .tags-view-item {
+    height: auto !important;
+    line-height: 1.4 !important;
+    padding: 0.35rem 0.75rem !important;
+    margin-top: 0 !important;
+    margin-left: 0.5rem !important;
+    border-radius: 2px !important;
+    font-size: 12px !important;
+    font-weight: 600;
+    background: rgba(28, 31, 41, 0.85) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: var(--aether-cyan-muted) !important;
+
+    &:first-of-type {
+      margin-left: 0 !important;
+    }
+
+    &.active {
+      background: var(--aether-primary, #00f2ff) !important;
+      border-color: transparent !important;
+      color: var(--on-primary-container, #006a71) !important;
+      box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+
+      &::before {
+        content: '';
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #fff;
+        margin-right: 6px;
+        vertical-align: middle;
+        animation: aether-pulse 2s ease-in-out infinite;
+      }
+
+      &.has-icon::before {
+        display: none !important;
+        content: none !important;
+        animation: none !important;
+      }
+    }
+  }
+
+  @keyframes aether-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.45;
+    }
+  }
+
+  /* 折叠侧栏：scrollbar 勿再 px-4，否则 54px 宽内图标被裁切 */
+  .hideSidebar .sidebar-container.aether-sidebar .scrollbar-wrapper {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* 侧栏菜单：展开稿 nav px-4；折叠须交还给 Element 的宽度/高度算法，勿用 padding/height:auto 压扁图标 */
+  .sidebar-container.aether-sidebar .el-menu {
+    background: transparent !important;
+    padding: 0;
+    gap: 0;
+
+    &:not(.el-menu--collapse) {
+      --el-menu-item-height: auto;
+      --el-menu-sub-item-height: auto;
+
+      .svg-icon {
+        margin-right: 0.75rem !important; /* gap-3 */
+        width: 1.25rem !important;
+        height: 1.25rem !important;
+        flex-shrink: 0;
+      }
+
+      .el-menu-item,
+      .el-sub-menu__title {
+        border-radius: 0;
+        height: auto !important;
+        min-height: 0 !important;
+        line-height: 1.35;
+        margin: 0 0 0.25rem !important; /* space-y-1 */
+        padding: 0.75rem 1rem !important; /* py-3 px-4 */
+        font-size: 0.875rem !important; /* text-sm */
+        font-weight: 500 !important;
+        font-family: "Space Grotesk", "Inter", system-ui, sans-serif;
+        letter-spacing: -0.01em;
+        color: var(--sidebar-text) !important;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.05) !important;
+          color: #e2e8f0 !important;
+        }
+      }
+
+      .el-menu-item.is-active {
+        color: var(--aether-cyan) !important;
+        background: rgba(34, 211, 238, 0.05) !important; /* bg-cyan-400/5 */
+        border-right: 2px solid var(--aether-cyan);
+        transform: translateX(4px); /* translate-x-1 */
+      }
+
+      .el-sub-menu.is-active > .el-sub-menu__title {
+        color: #e2e8f0 !important;
+      }
+
+      .nest-menu .el-sub-menu > .el-sub-menu__title,
+      .nest-menu .el-menu-item {
+        padding-left: 1.75rem !important;
+        margin-bottom: 0.125rem !important;
+      }
+
+      .nest-menu .nest-menu .el-menu-item {
+        padding-left: 2.5rem !important;
+      }
+    }
+
+    &.el-menu--collapse {
+      --el-menu-item-height: 56px;
+
+      .svg-icon {
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+        width: 1.25rem !important;
+        height: 1.25rem !important;
+        flex-shrink: 0;
+      }
+
+      .el-menu-item,
+      .el-sub-menu__title {
+        height: 56px !important;
+        min-height: 56px !important;
+        line-height: 56px !important;
+        margin: 0 0 4px !important;
+        padding: 0 !important;
+        justify-content: center !important;
+        transform: none !important;
+      }
+
+      .el-menu-item .el-menu-tooltip__trigger,
+      .el-sub-menu__title .el-menu-tooltip__trigger {
+        padding: 0 10px !important;
+        justify-content: center !important;
+      }
+
+      .el-menu-item.is-active {
+        color: var(--aether-cyan) !important;
+        background: rgba(34, 211, 238, 0.08) !important;
+        border-right: none !important;
+        border-left: 2px solid var(--aether-cyan);
+      }
+
+      .nest-menu .el-sub-menu > .el-sub-menu__title,
+      .nest-menu .el-menu-item {
+        padding-left: 0 !important;
+        margin-bottom: 4px !important;
+      }
+
+      .nest-menu .nest-menu .el-menu-item {
+        padding-left: 0 !important;
+      }
+    }
+  }
+
+  .sidebar-container.aether-sidebar.theme-dark .nest-menu .el-sub-menu > .el-sub-menu__title,
+  .sidebar-container.aether-sidebar.theme-dark .el-sub-menu .el-menu-item {
+    background-color: transparent !important;
+  }
+
+  .sidebar-container.aether-sidebar.theme-dark .nest-menu .el-sub-menu > .el-sub-menu__title:hover,
+  .sidebar-container.aether-sidebar.theme-dark .el-sub-menu .el-menu-item:hover {
+    background: rgba(255, 255, 255, 0.05) !important;
+  }
+}

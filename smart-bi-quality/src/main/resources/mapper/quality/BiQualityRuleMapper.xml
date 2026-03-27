@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.lhl.quality.mapper.BiQualityRuleMapper">
+    <resultMap type="dev.lhl.quality.domain.BiQualityRule" id="BiQualityRuleResult">
+        <result property="id" column="id" />
+        <result property="tableId" column="table_id" />
+        <result property="ruleType" column="rule_type" />
+        <result property="ruleConfig" column="rule_config" />
+        <result property="priority" column="priority" />
+        <result property="severityWeight" column="severity_weight" />
+        <result property="status" column="status" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+        <result property="remark" column="remark" />
+    </resultMap>
+    <sql id="selectBiQualityRuleVo">
+        select id, table_id, rule_type, rule_config, priority, severity_weight, status,
+               create_by, create_time, update_by, update_time, remark
+        from bi_quality_rule
+    </sql>
+    <select id="selectById" resultMap="BiQualityRuleResult">
+        <include refid="selectBiQualityRuleVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectList" resultMap="BiQualityRuleResult">
+        <include refid="selectBiQualityRuleVo"/>
+        <where>
+            <if test="tableId != null">and table_id = #{tableId}</if>
+            <if test="ruleType != null and ruleType != ''">and rule_type = #{ruleType}</if>
+            <if test="status != null and status != ''">and status = #{status}</if>
+        </where>
+        order by priority asc, id asc
+    </select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into bi_quality_rule
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tableId != null">table_id,</if>
+            <if test="ruleType != null">rule_type,</if>
+            <if test="ruleConfig != null">rule_config,</if>
+            <if test="priority != null">priority,</if>
+            <if test="severityWeight != null">severity_weight,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tableId != null">#{tableId},</if>
+            <if test="ruleType != null">#{ruleType},</if>
+            <if test="ruleConfig != null">#{ruleConfig},</if>
+            <if test="priority != null">#{priority},</if>
+            <if test="severityWeight != null">#{severityWeight},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+    <update id="updateById">
+        update bi_quality_rule
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="tableId != null">table_id = #{tableId},</if>
+            <if test="ruleType != null">rule_type = #{ruleType},</if>
+            <if test="ruleConfig != null">rule_config = #{ruleConfig},</if>
+            <if test="priority != null">priority = #{priority},</if>
+            <if test="severityWeight != null">severity_weight = #{severityWeight},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <delete id="deleteById">
+        delete from bi_quality_rule where id = #{id}
+    </delete>
+    <delete id="deleteByIds">
+        delete from bi_quality_rule where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

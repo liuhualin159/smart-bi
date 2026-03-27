@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.lhl.dashboard.mapper.ChartCardMapper">
+    <resultMap type="ChartCard" id="ChartCardResult">
+        <result property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="userId" column="user_id" />
+        <result property="queryId" column="query_id" />
+        <result property="chartType" column="chart_type" />
+        <result property="chartConfig" column="chart_config" />
+        <result property="sql" column="sql" />
+        <result property="permissionTags" column="permission_tags" />
+        <result property="lastRefreshTime" column="last_refresh_time" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+        <result property="remark" column="remark" />
+    </resultMap>
+    <sql id="selectChartCardVo">
+        select id, name, user_id, query_id, chart_type, chart_config, &#96;sql&#96;, permission_tags, 
+               last_refresh_time, create_by, create_time, update_by, update_time, remark 
+        from bi_chart_card
+    </sql>
+    <select id="selectChartCardList" parameterType="ChartCard" resultMap="ChartCardResult">
+        <include refid="selectChartCardVo"/>
+        <where>
+            <if test="name != null and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="userId != null">and user_id = #{userId}</if>
+            <if test="chartType != null and chartType != ''">and chart_type = #{chartType}</if>
+        </where>
+        order by create_time desc
+    </select>
+    <select id="selectChartCardById" parameterType="Long" resultMap="ChartCardResult">
+        <include refid="selectChartCardVo"/>
+        where id = #{id}
+    </select>
+    <insert id="insertChartCard" parameterType="ChartCard" useGeneratedKeys="true" keyProperty="id">
+        insert into bi_chart_card
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="queryId != null">query_id,</if>
+            <if test="chartType != null and chartType != ''">chart_type,</if>
+            <if test="chartConfig != null">chart_config,</if>
+            <if test="sql != null">&#96;sql&#96;,</if>
+            <if test="permissionTags != null">permission_tags,</if>
+            <if test="lastRefreshTime != null">last_refresh_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="queryId != null">#{queryId},</if>
+            <if test="chartType != null and chartType != ''">#{chartType},</if>
+            <if test="chartConfig != null">#{chartConfig},</if>
+            <if test="sql != null">#{sql},</if>
+            <if test="permissionTags != null">#{permissionTags},</if>
+            <if test="lastRefreshTime != null">#{lastRefreshTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+    <update id="updateChartCard" parameterType="ChartCard">
+        update bi_chart_card
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="chartType != null and chartType != ''">chart_type = #{chartType},</if>
+            <if test="chartConfig != null">chart_config = #{chartConfig},</if>
+            <if test="sql != null">&#96;sql&#96; = #{sql},</if>
+            <if test="permissionTags != null">permission_tags = #{permissionTags},</if>
+            <if test="lastRefreshTime != null">last_refresh_time = #{lastRefreshTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <delete id="deleteChartCardById" parameterType="Long">
+        delete from bi_chart_card where id = #{id}
+    </delete>
+    <delete id="deleteChartCardByIds" parameterType="String">
+        delete from bi_chart_card where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

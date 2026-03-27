@@ -1,0 +1,363 @@
+@use './mixin.scss';
+@use './transition.scss';
+@use './element-ui.scss';
+@use './sidebar.scss';
+@use './btn.scss';
+@use './ruoyi.scss';
+@use './theme-aether.scss';
+
+body {
+  height: 100%;
+  margin: 0;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+}
+
+label {
+  font-weight: 700;
+}
+
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+#app {
+  height: 100%;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+.no-padding {
+  padding: 0px !important;
+}
+
+.padding-content {
+  padding: 4px 0;
+}
+
+a:focus,
+a:active {
+  outline: none;
+}
+
+a,
+a:focus,
+a:hover {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+
+div:focus {
+  outline: none;
+}
+
+.fr {
+  float: right;
+}
+
+.fl {
+  float: left;
+}
+
+.pr-5 {
+  padding-right: 5px;
+}
+
+.pl-5 {
+  padding-left: 5px;
+}
+
+.block {
+  display: block;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.inlineBlock {
+  display: block;
+}
+
+.clearfix {
+  &:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+}
+
+aside {
+  background: #eef1f6;
+  padding: 8px 24px;
+  margin-bottom: 20px;
+  border-radius: 2px;
+  display: block;
+  line-height: 32px;
+  font-size: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  color: #2c3e50;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  a {
+    color: #337ab7;
+    cursor: pointer;
+
+    &:hover {
+      color: rgb(32, 160, 255);
+    }
+  }
+}
+
+//main-container全局样式
+.app-container {
+  padding: 20px;
+}
+
+.components-container {
+  margin: 30px 50px;
+  position: relative;
+}
+
+.text-center {
+  text-align: center
+}
+
+.sub-navbar {
+  height: 50px;
+  line-height: 50px;
+  position: relative;
+  width: 100%;
+  text-align: right;
+  padding-right: 20px;
+  transition: 600ms ease position;
+  background: linear-gradient(90deg, rgba(32, 182, 249, 1) 0%, rgba(32, 182, 249, 1) 0%, rgba(33, 120, 241, 1) 100%, rgba(33, 120, 241, 1) 100%);
+
+  .subtitle {
+    font-size: 20px;
+    color: #fff;
+  }
+
+  &.draft {
+    background: #d0d0d0;
+  }
+
+  &.deleted {
+    background: #d0d0d0;
+  }
+}
+
+.link-type,
+.link-type:focus {
+  color: #337ab7;
+  cursor: pointer;
+
+  &:hover {
+    color: rgb(32, 160, 255);
+  }
+}
+
+.filter-container {
+  padding-bottom: 10px;
+
+  .filter-item {
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 10px;
+  }
+}
+
+/* Aether list page design system: reusable for all list pages */
+.aether-list-page {
+  --aether-surface-lowest: #0a0e17;
+  --aether-surface-low: #181b25;
+  --aether-surface: #1c1f29;
+  --aether-outline: rgba(58, 73, 75, 0.3);
+  --aether-outline-ghost: rgba(58, 73, 75, 0.15);
+  /* 与 list 设计稿 code.html 对齐：主正文偏亮、辅文仍用 on-surface-variant 系但提高亮度 */
+  --aether-text-main: #f3f4f8;
+  --aether-text-muted: #c8d8d9;
+  --aether-text-subtle: rgba(255, 255, 255, 0.72);
+  --aether-primary: #00f2ff;
+  --aether-secondary: #7000ff;
+  --aether-danger: #ffb4ab;
+
+  background: radial-gradient(circle at 85% 0, rgba(112, 0, 255, 0.08), transparent 35%), var(--aether-surface-lowest);
+  color: var(--aether-text-main);
+  /* 设计稿：筛选/表体 text-sm(14px)、表头与工具条约 11px；实装时在稿面基础上整体抬一档，接近大屏阅读与 Ruoyi 表头 13px 习惯 */
+  --aether-list-font-table-header: 13px;
+  --aether-list-font-filter-label: 13px;
+  --aether-list-font-action: 14px;
+  --aether-list-font-pagination: 15px;
+}
+
+html.dark {
+  .aether-list-page {
+    /* 列表页内 Element 文案色：与稿面表格/表单白字层级一致 */
+    --el-text-color-primary: #ffffff;
+    --el-text-color-regular: rgba(255, 255, 255, 0.92);
+    --el-text-color-secondary: rgba(255, 255, 255, 0.72);
+    --el-text-color-placeholder: rgba(255, 255, 255, 0.35);
+
+    /* Element 基础字号：表、输入框、主按钮等随 --el-font-size-base 联动 */
+    --el-font-size-base: 15px;
+    --el-font-size-small: 14px;
+    --el-font-size-extra-small: 13px;
+    --el-font-line-height-primary: 26px;
+
+    .splitpanes.default-theme,
+    .splitpanes.default-theme .splitpanes__pane {
+      background-color: transparent;
+    }
+
+    .splitpanes.default-theme .splitpanes__splitter {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-left: 1px solid rgba(255, 255, 255, 0.06);
+      border-right: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .aether-side-panel,
+    .aether-filter-card,
+    .aether-table .el-table__inner-wrapper,
+    .aether-pagination {
+      background: rgba(28, 31, 41, 0.45);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--aether-outline-ghost);
+      border-radius: 8px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .aether-side-panel {
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .aether-filter-card {
+      padding: 20px 20px 4px;
+      margin-bottom: 16px;
+
+      .el-form-item.el-form-item--default {
+        --font-size: var(--el-font-size-base);
+        --el-form-label-font-size: var(--aether-list-font-filter-label);
+      }
+
+      .el-form-item__label {
+        color: rgba(255, 255, 255, 0.95);
+        font-size: var(--aether-list-font-filter-label);
+        font-weight: 700;
+      }
+    }
+
+    .aether-action-bar {
+      margin-bottom: 14px;
+
+      .el-button {
+        border-radius: 4px;
+        font-size: var(--aether-list-font-action);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .el-button--primary.is-plain {
+        border-color: rgba(0, 242, 255, 0.35);
+        color: var(--aether-primary);
+      }
+
+      .el-button--success.is-plain {
+        border-color: rgba(254, 225, 115, 0.35);
+        color: #ffe173;
+      }
+
+      .el-button--danger.is-plain {
+        border-color: rgba(255, 180, 171, 0.35);
+        color: var(--aether-danger);
+      }
+    }
+
+    .aether-table {
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--aether-outline-ghost);
+      --el-table-bg-color: transparent;
+      --el-table-tr-bg-color: transparent;
+      --el-table-border-color: rgba(255, 255, 255, 0.07);
+      --el-table-header-bg-color: rgba(255, 255, 255, 0.06);
+      --el-table-header-text-color: #ffffff;
+      --el-table-row-hover-bg-color: rgba(255, 255, 255, 0.03);
+      --el-table-text-color: rgba(255, 255, 255, 0.95);
+    }
+
+    .aether-table .el-table__header th {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: var(--aether-list-font-table-header);
+      font-weight: 800;
+      color: #ffffff !important;
+    }
+
+    .aether-table .el-table__row td {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .aether-table .el-switch__core {
+      border-color: rgba(0, 242, 255, 0.35);
+      background-color: rgba(0, 242, 255, 0.12);
+    }
+
+    .aether-pagination {
+      margin-top: 12px;
+      padding: 10px 16px;
+    }
+
+    .aether-pagination .el-pagination {
+      justify-content: flex-end;
+      --el-pagination-font-size: var(--aether-list-font-pagination);
+    }
+
+    .aether-pagination .el-pagination,
+    .aether-pagination .el-pagination button,
+    .aether-pagination .el-pagination span {
+      color: var(--aether-text-subtle);
+      font-size: var(--aether-list-font-pagination);
+    }
+
+    /* 侧栏树、部门筛选等与列表同屏的正文 */
+    .aether-side-panel .el-tree-node__content {
+      font-size: var(--el-font-size-base);
+    }
+
+    .aether-side-panel .el-input__inner,
+    .aether-side-panel .el-input__wrapper {
+      font-size: var(--el-font-size-base);
+    }
+
+    .el-input__wrapper,
+    .el-textarea__inner,
+    .el-select__wrapper,
+    .el-range-editor.el-input__wrapper {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(58, 73, 75, 0.35);
+      box-shadow: none;
+    }
+
+    .el-input__wrapper.is-focus,
+    .el-select__wrapper.is-focused,
+    .el-range-editor.el-input__wrapper.is-focus {
+      border-color: rgba(0, 242, 255, 0.7);
+      box-shadow: 0 0 0 1px rgba(0, 242, 255, 0.2);
+    }
+  }
+}

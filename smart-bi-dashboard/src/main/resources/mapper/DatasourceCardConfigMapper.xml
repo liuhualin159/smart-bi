@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.lhl.dashboard.mapper.DatasourceCardConfigMapper">
+    <resultMap type="DatasourceCardConfig" id="DatasourceCardConfig">
+        <result property="id" column="id" />
+        <result property="dashboardCardId" column="dashboard_card_id" />
+        <result property="datasourceId" column="datasource_id" />
+        <result property="queryType" column="query_type" />
+        <result property="sqlTemplate" column="sql_template" />
+        <result property="apiUrl" column="api_url" />
+        <result property="apiMethod" column="api_method" />
+        <result property="apiHeaders" column="api_headers" />
+        <result property="apiBody" column="api_body" />
+        <result property="responseDataPath" column="response_data_path" />
+        <result property="chartType" column="chart_type" />
+        <result property="chartConfigOverride" column="chart_config_override" />
+        <result property="columnMapping" column="column_mapping" />
+        <result property="refreshInterval" column="refresh_interval" />
+        <result property="queryTimeout" column="query_timeout" />
+        <result property="maxRows" column="max_rows" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+    </resultMap>
+    <sql id="selectDatasourceCardConfigVo">
+        select id, dashboard_card_id, datasource_id, query_type, sql_template,
+               api_url, api_method, api_headers, api_body, response_data_path,
+               chart_type, chart_config_override, column_mapping,
+               refresh_interval, query_timeout, max_rows,
+               create_by, create_time, update_by, update_time
+        from bi_datasource_card_config
+    </sql>
+    <select id="selectDatasourceCardConfigById" parameterType="Long" resultMap="DatasourceCardConfig">
+        <include refid="selectDatasourceCardConfigVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectByDashboardCardId" parameterType="Long" resultMap="DatasourceCardConfig">
+        <include refid="selectDatasourceCardConfigVo"/>
+        where dashboard_card_id = #{dashboardCardId}
+    </select>
+    <select id="selectDatasourceCardConfigList" parameterType="DatasourceCardConfig" resultMap="DatasourceCardConfig">
+        <include refid="selectDatasourceCardConfigVo"/>
+        <where>
+            <if test="dashboardCardId != null">and dashboard_card_id = #{dashboardCardId}</if>
+            <if test="datasourceId != null">and datasource_id = #{datasourceId}</if>
+            <if test="queryType != null and queryType != ''">and query_type = #{queryType}</if>
+            <if test="chartType != null and chartType != ''">and chart_type = #{chartType}</if>
+        </where>
+    </select>
+    <insert id="insertDatasourceCardConfig" parameterType="DatasourceCardConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into bi_datasource_card_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dashboardCardId != null">dashboard_card_id,</if>
+            <if test="datasourceId != null">datasource_id,</if>
+            <if test="queryType != null">query_type,</if>
+            <if test="sqlTemplate != null">sql_template,</if>
+            <if test="apiUrl != null">api_url,</if>
+            <if test="apiMethod != null">api_method,</if>
+            <if test="apiHeaders != null">api_headers,</if>
+            <if test="apiBody != null">api_body,</if>
+            <if test="responseDataPath != null">response_data_path,</if>
+            <if test="chartType != null">chart_type,</if>
+            <if test="chartConfigOverride != null">chart_config_override,</if>
+            <if test="columnMapping != null">column_mapping,</if>
+            <if test="refreshInterval != null">refresh_interval,</if>
+            <if test="queryTimeout != null">query_timeout,</if>
+            <if test="maxRows != null">max_rows,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dashboardCardId != null">#{dashboardCardId},</if>
+            <if test="datasourceId != null">#{datasourceId},</if>
+            <if test="queryType != null">#{queryType},</if>
+            <if test="sqlTemplate != null">#{sqlTemplate},</if>
+            <if test="apiUrl != null">#{apiUrl},</if>
+            <if test="apiMethod != null">#{apiMethod},</if>
+            <if test="apiHeaders != null">#{apiHeaders},</if>
+            <if test="apiBody != null">#{apiBody},</if>
+            <if test="responseDataPath != null">#{responseDataPath},</if>
+            <if test="chartType != null">#{chartType},</if>
+            <if test="chartConfigOverride != null">#{chartConfigOverride},</if>
+            <if test="columnMapping != null">#{columnMapping},</if>
+            <if test="refreshInterval != null">#{refreshInterval},</if>
+            <if test="queryTimeout != null">#{queryTimeout},</if>
+            <if test="maxRows != null">#{maxRows},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+    <update id="updateDatasourceCardConfig" parameterType="DatasourceCardConfig">
+        update bi_datasource_card_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dashboardCardId != null">dashboard_card_id = #{dashboardCardId},</if>
+            <if test="datasourceId != null">datasource_id = #{datasourceId},</if>
+            <if test="queryType != null">query_type = #{queryType},</if>
+            <if test="sqlTemplate != null">sql_template = #{sqlTemplate},</if>
+            <if test="apiUrl != null">api_url = #{apiUrl},</if>
+            <if test="apiMethod != null">api_method = #{apiMethod},</if>
+            <if test="apiHeaders != null">api_headers = #{apiHeaders},</if>
+            <if test="apiBody != null">api_body = #{apiBody},</if>
+            <if test="responseDataPath != null">response_data_path = #{responseDataPath},</if>
+            <if test="chartType != null">chart_type = #{chartType},</if>
+            <if test="chartConfigOverride != null">chart_config_override = #{chartConfigOverride},</if>
+            <if test="columnMapping != null">column_mapping = #{columnMapping},</if>
+            <if test="refreshInterval != null">refresh_interval = #{refreshInterval},</if>
+            <if test="queryTimeout != null">query_timeout = #{queryTimeout},</if>
+            <if test="maxRows != null">max_rows = #{maxRows},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <delete id="deleteDatasourceCardConfigById" parameterType="Long">
+        delete from bi_datasource_card_config where id = #{id}
+    </delete>
+    <delete id="deleteDatasourceCardConfigByIds" parameterType="String">
+        delete from bi_datasource_card_config where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

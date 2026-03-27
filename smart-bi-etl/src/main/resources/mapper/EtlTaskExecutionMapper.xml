@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.lhl.etl.mapper.EtlTaskExecutionMapper">
+    
+    <resultMap type="EtlTaskExecution" id="EtlTaskExecutionResult">
+        <result property="id"            column="id"            />
+        <result property="taskId"        column="task_id"       />
+        <result property="status"        column="status"        />
+        <result property="startTime"     column="start_time"    />
+        <result property="endTime"       column="end_time"      />
+        <result property="duration"      column="duration"      />
+        <result property="dataCount"     column="data_count"    />
+        <result property="errorMessage"  column="error_message" />
+        <result property="checkpoint"    column="checkpoint"   />
+        <result property="createTime"    column="create_time"   />
+    </resultMap>
+
+    <sql id="selectEtlTaskExecutionVo">
+        select id, task_id, status, start_time, end_time, duration, data_count, 
+               error_message, checkpoint, create_time 
+        from bi_etl_task_execution
+    </sql>
+
+    <select id="selectEtlTaskExecutionList" parameterType="EtlTaskExecution" resultMap="EtlTaskExecutionResult">
+        <include refid="selectEtlTaskExecutionVo"/>
+        <where>  
+            <if test="taskId != null">
+                and task_id = #{taskId}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectEtlTaskExecutionListByTaskId" parameterType="Long" resultMap="EtlTaskExecutionResult">
+        <include refid="selectEtlTaskExecutionVo"/>
+        where task_id = #{taskId}
+        order by create_time desc
+    </select>
+    
+    <select id="selectEtlTaskExecutionById" parameterType="Long" resultMap="EtlTaskExecutionResult">
+        <include refid="selectEtlTaskExecutionVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertEtlTaskExecution" parameterType="EtlTaskExecution" useGeneratedKeys="true" keyProperty="id">
+        insert into bi_etl_task_execution
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">task_id,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="duration != null">duration,</if>
+            <if test="dataCount != null">data_count,</if>
+            <if test="errorMessage != null">error_message,</if>
+            <if test="checkpoint != null">checkpoint,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="taskId != null">#{taskId},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="duration != null">#{duration},</if>
+            <if test="dataCount != null">#{dataCount},</if>
+            <if test="errorMessage != null">#{errorMessage},</if>
+            <if test="checkpoint != null">#{checkpoint},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateEtlTaskExecution" parameterType="EtlTaskExecution">
+        update bi_etl_task_execution
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="duration != null">duration = #{duration},</if>
+            <if test="dataCount != null">data_count = #{dataCount},</if>
+            <if test="errorMessage != null">error_message = #{errorMessage},</if>
+            <if test="checkpoint != null">checkpoint = #{checkpoint},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteEtlTaskExecutionById" parameterType="Long">
+        delete from bi_etl_task_execution where id = #{id}
+    </delete>
+
+    <delete id="deleteEtlTaskExecutionByIds" parameterType="String">
+        delete from bi_etl_task_execution where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+    <select id="selectRecentExecutions" parameterType="java.util.Date" resultMap="EtlTaskExecutionResult">
+        <include refid="selectEtlTaskExecutionVo"/>
+        where create_time >= #{startTime}
+        order by create_time desc
+    </select>
+    
+    <select id="selectAllExecutions" resultMap="EtlTaskExecutionResult">
+        <include refid="selectEtlTaskExecutionVo"/>
+        order by create_time desc
+    </select>
+</mapper>

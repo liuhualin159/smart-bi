@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>smart-bi</artifactId>
+        <groupId>dev.lhl</groupId>
+        <version>3.9.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>smart-bi-quality</artifactId>
+
+    <description>
+        数据质量监控模块
+    </description>
+
+    <dependencies>
+        <!-- 通用工具模块 -->
+        <dependency>
+            <groupId>dev.lhl</groupId>
+            <artifactId>smart-bi-common</artifactId>
+        </dependency>
+
+        <!-- 元数据管理模块（table_id 关联） -->
+        <dependency>
+            <groupId>dev.lhl</groupId>
+            <artifactId>smart-bi-metadata</artifactId>
+        </dependency>
+
+        <!-- 数据源管理模块（执行规则 SQL） -->
+        <dependency>
+            <groupId>dev.lhl</groupId>
+            <artifactId>smart-bi-datasource</artifactId>
+        </dependency>
+
+        <!-- MyBatis -->
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- POI Excel -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

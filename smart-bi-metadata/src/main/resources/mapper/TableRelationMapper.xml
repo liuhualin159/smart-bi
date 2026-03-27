@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.lhl.metadata.mapper.TableRelationMapper">
+    <resultMap type="dev.lhl.metadata.domain.TableRelation" id="TableRelationResult">
+        <result property="id" column="id" />
+        <result property="leftTable" column="left_table" />
+        <result property="leftField" column="left_field" />
+        <result property="rightTable" column="right_table" />
+        <result property="rightField" column="right_field" />
+        <result property="relationType" column="relation_type" />
+        <result property="priority" column="priority" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+        <result property="remark" column="remark" />
+    </resultMap>
+    <sql id="selectTableRelationVo">
+        select id, left_table, left_field, right_table, right_field, relation_type, priority, create_by, create_time, update_by, update_time, remark from bi_table_relation
+    </sql>
+    <select id="selectList" resultMap="TableRelationResult">
+        <include refid="selectTableRelationVo"/>
+        <where>
+            <if test="leftTable != null and leftTable != ''">and left_table = #{leftTable}</if>
+            <if test="rightTable != null and rightTable != ''">and right_table = #{rightTable}</if>
+        </where>
+        order by priority desc, id
+    </select>
+    <select id="selectById" resultMap="TableRelationResult">
+        <include refid="selectTableRelationVo"/> where id = #{id}
+    </select>
+    <insert id="insert" parameterType="dev.lhl.metadata.domain.TableRelation" useGeneratedKeys="true" keyProperty="id">
+        insert into bi_table_relation (left_table, left_field, right_table, right_field, relation_type, priority, create_by, create_time, remark)
+        values (#{leftTable}, #{leftField}, #{rightTable}, #{rightField}, #{relationType}, #{priority}, #{createBy}, #{createTime}, #{remark})
+    </insert>
+    <update id="update" parameterType="dev.lhl.metadata.domain.TableRelation">
+        update bi_table_relation
+        <set>
+            <if test="leftTable != null">left_table = #{leftTable},</if>
+            <if test="leftField != null">left_field = #{leftField},</if>
+            <if test="rightTable != null">right_table = #{rightTable},</if>
+            <if test="rightField != null">right_field = #{rightField},</if>
+            <if test="relationType != null">relation_type = #{relationType},</if>
+            <if test="priority != null">priority = #{priority},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </set>
+        where id = #{id}
+    </update>
+    <delete id="deleteById" parameterType="Long">
+        delete from bi_table_relation where id = #{id}
+    </delete>
+    <delete id="deleteByIds" parameterType="String">
+        delete from bi_table_relation where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">#{id}</foreach>
+    </delete>
+</mapper>

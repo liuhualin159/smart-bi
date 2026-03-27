@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.lhl.metadata.mapper.AtomicMetricMapper">
+    <resultMap type="AtomicMetric" id="AtomicMetricResult">
+        <result property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="code" column="code" />
+        <result property="expression" column="expression" />
+        <result property="domainId" column="domain_id" />
+        <result property="description" column="description" />
+        <result property="vectorId" column="vector_id" />
+        <result property="temporalExpression" column="temporal_expression" />
+        <result property="metricGrain" column="metric_grain" />
+        <result property="metricFilter" column="metric_filter" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+        <result property="remark" column="remark" />
+    </resultMap>
+    <sql id="selectAtomicMetricVo">
+        select id, name, code, expression, domain_id, description, vector_id, temporal_expression, metric_grain, metric_filter, create_by, create_time, update_by, update_time, remark 
+        from bi_atomic_metric
+    </sql>
+    <select id="selectAtomicMetricList" parameterType="AtomicMetric" resultMap="AtomicMetricResult">
+        <include refid="selectAtomicMetricVo"/>
+        <where>
+            <if test="name != null and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="code != null and code != ''">and code = #{code}</if>
+            <if test="domainId != null">and domain_id = #{domainId}</if>
+        </where>
+        order by create_time desc
+    </select>
+    <select id="selectAtomicMetricById" parameterType="Long" resultMap="AtomicMetricResult">
+        <include refid="selectAtomicMetricVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectByKeywordForAutocomplete" resultMap="AtomicMetricResult">
+        <include refid="selectAtomicMetricVo"/>
+        <where>
+            <if test="keyword != null and keyword != ''">
+                and (name LIKE CONCAT('%', #{keyword}, '%') OR code LIKE CONCAT('%', #{keyword}, '%') OR description LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        order by create_time desc
+        limit #{limit}
+    </select>
+    <insert id="insertAtomicMetric" parameterType="AtomicMetric" useGeneratedKeys="true" keyProperty="id">
+        insert into bi_atomic_metric
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="code != null and code != ''">code,</if>
+            <if test="expression != null and expression != ''">expression,</if>
+            <if test="domainId != null">domain_id,</if>
+            <if test="description != null">description,</if>
+            <if test="vectorId != null">vector_id,</if>
+            <if test="temporalExpression != null">temporal_expression,</if>
+            <if test="metricGrain != null">metric_grain,</if>
+            <if test="metricFilter != null">metric_filter,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="code != null and code != ''">#{code},</if>
+            <if test="expression != null and expression != ''">#{expression},</if>
+            <if test="domainId != null">#{domainId},</if>
+            <if test="description != null">#{description},</if>
+            <if test="vectorId != null">#{vectorId},</if>
+            <if test="temporalExpression != null">#{temporalExpression},</if>
+            <if test="metricGrain != null">#{metricGrain},</if>
+            <if test="metricFilter != null">#{metricFilter},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+    <update id="updateAtomicMetric" parameterType="AtomicMetric">
+        update bi_atomic_metric
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="code != null and code != ''">code = #{code},</if>
+            <if test="expression != null and expression != ''">expression = #{expression},</if>
+            <if test="domainId != null">domain_id = #{domainId},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="vectorId != null">vector_id = #{vectorId},</if>
+            <if test="temporalExpression != null">temporal_expression = #{temporalExpression},</if>
+            <if test="metricGrain != null">metric_grain = #{metricGrain},</if>
+            <if test="metricFilter != null">metric_filter = #{metricFilter},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <delete id="deleteAtomicMetricById" parameterType="Long">
+        delete from bi_atomic_metric where id = #{id}
+    </delete>
+    <delete id="deleteAtomicMetricByIds" parameterType="String">
+        delete from bi_atomic_metric where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

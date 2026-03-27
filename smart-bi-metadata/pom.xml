@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>smart-bi</artifactId>
+        <groupId>dev.lhl</groupId>
+        <version>3.9.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>smart-bi-metadata</artifactId>
+
+    <description>
+        元数据管理模块
+    </description>
+
+    <dependencies>
+        <!-- 通用工具模块 -->
+        <dependency>
+            <groupId>dev.lhl</groupId>
+            <artifactId>smart-bi-common</artifactId>
+        </dependency>
+
+        <!-- MyBatis -->
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- Spring AI OpenAI Starter (用于Embedding模型，兼容OpenAI API) -->
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-model-openai</artifactId>
+        </dependency>
+        
+        <!-- Spring AI DashScope Starter (阿里云百炼平台向量模型) -->
+        <!-- 注意：如果Spring AI 1.1.0不支持DashScope，可以使用OpenAI兼容模式配置 -->
+        <!-- <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-model-dashscope</artifactId>
+        </dependency> -->
+
+        <!-- Spring AI Qdrant向量存储 Starter (版本由父POM的BOM管理) -->
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-vector-store-qdrant</artifactId>
+        </dependency>
+        
+        <!-- Protobuf Java API (Qdrant客户端需要，版本由父POM统一管理) -->
+        <!-- MapFieldReflectionAccessor 类在 protobuf-java 3.21+ 版本中 -->
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+        </dependency>
+        <!-- Protobuf Java Util (包含反射访问器等工具类) -->
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java-util</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

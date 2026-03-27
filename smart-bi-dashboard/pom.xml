@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>smart-bi</artifactId>
+        <groupId>dev.lhl</groupId>
+        <version>3.9.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>smart-bi-dashboard</artifactId>
+
+    <description>
+        看板管理模块
+    </description>
+
+    <dependencies>
+        <!-- 通用工具模块 -->
+        <dependency>
+            <groupId>dev.lhl</groupId>
+            <artifactId>smart-bi-common</artifactId>
+        </dependency>
+
+        <!-- 智能查询模块 -->
+        <dependency>
+            <groupId>dev.lhl</groupId>
+            <artifactId>smart-bi-query</artifactId>
+        </dependency>
+
+        <!-- 定时任务模块 -->
+        <dependency>
+            <groupId>dev.lhl</groupId>
+            <artifactId>smart-bi-quartz</artifactId>
+        </dependency>
+
+        <!-- 数据源管理模块 -->
+        <dependency>
+            <groupId>dev.lhl</groupId>
+            <artifactId>smart-bi-datasource</artifactId>
+        </dependency>
+
+        <!-- 元数据模块（报表生成规划时限定表列表） -->
+        <dependency>
+            <groupId>dev.lhl</groupId>
+            <artifactId>smart-bi-metadata</artifactId>
+        </dependency>
+
+        <!-- MyBatis -->
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- Apache PDFBox：PDF 生成，支持中文 -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+    </dependencies>
+
+</project>

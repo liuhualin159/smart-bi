@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.lhl.query.mapper.FewshotExampleMapper">
+
+    <resultMap type="dev.lhl.query.domain.FewshotExample" id="FewshotExampleResult">
+        <result property="id"           column="id" />
+        <result property="question"     column="question" />
+        <result property="sqlText"      column="sql_text" />
+        <result property="datasourceId" column="datasource_id" />
+        <result property="domainTags"   column="domain_tags" />
+        <result property="enabled"      column="enabled" />
+        <result property="createdBy"    column="created_by" />
+        <result property="createdAt"    column="created_at" />
+        <result property="updatedAt"    column="updated_at" />
+    </resultMap>
+
+    <sql id="selectVo">
+        select id, question, sql_text, datasource_id, domain_tags, enabled, created_by, created_at, updated_at
+        from bi_fewshot_example
+    </sql>
+
+    <select id="selectById" parameterType="Long" resultMap="FewshotExampleResult">
+        <include refid="selectVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectList" parameterType="dev.lhl.query.domain.FewshotExample" resultMap="FewshotExampleResult">
+        <include refid="selectVo"/>
+        <where>
+            <if test="datasourceId != null">and datasource_id = #{datasourceId}</if>
+            <if test="enabled != null">and enabled = #{enabled}</if>
+            <if test="domainTags != null and domainTags != ''">and domain_tags LIKE CONCAT('%', #{domainTags}, '%')</if>
+            <if test="question != null and question != ''">and question LIKE CONCAT('%', #{question}, '%')</if>
+        </where>
+        order by created_at desc
+    </select>
+
+    <select id="selectEnabledByDatasource" resultMap="FewshotExampleResult">
+        <include refid="selectVo"/>
+        where enabled = 1
+        and (datasource_id IS NULL <if test="datasourceId != null">OR datasource_id = #{datasourceId}</if>)
+        order by created_at desc
+        limit #{limit}
+    </select>
+
+    <insert id="insert" parameterType="dev.lhl.query.domain.FewshotExample" useGeneratedKeys="true" keyProperty="id">
+        insert into bi_fewshot_example (question, sql_text, datasource_id, domain_tags, enabled, created_by, created_at, updated_at)
+        values (#{question}, #{sqlText}, #{datasourceId}, #{domainTags}, #{enabled}, #{createdBy}, NOW(), NOW())
+    </insert>
+
+    <update id="update" parameterType="dev.lhl.query.domain.FewshotExample">
+        update bi_fewshot_example
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="question != null">question = #{question},</if>
+            <if test="sqlText != null">sql_text = #{sqlText},</if>
+            <if test="datasourceId != null">datasource_id = #{datasourceId},</if>
+            <if test="domainTags != null">domain_tags = #{domainTags},</if>
+            <if test="enabled != null">enabled = #{enabled},</if>
+            updated_at = NOW(),
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="Long">
+        delete from bi_fewshot_example where id = #{id}
+    </delete>
+
+    <update id="updateEnabled">
+        update bi_fewshot_example set enabled = #{enabled}, updated_at = NOW() where id = #{id}
+    </update>
+
+    <update id="batchUpdateEnabled">
+        update bi_fewshot_example set enabled = #{enabled}, updated_at = NOW()
+        where id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">#{id}</foreach>
+    </update>
+
+</mapper>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.lhl.metadata.mapper.TableMetadataMapper">
+    <resultMap type="TableMetadata" id="TableMetadataResult">
+        <result property="id" column="id" />
+        <result property="tableName" column="table_name" />
+        <result property="tableComment" column="table_comment" />
+        <result property="businessDescription" column="business_description" />
+        <result property="domainId" column="domain_id" />
+        <result property="vectorId" column="vector_id" />
+        <result property="tableUsage" column="table_usage" />
+        <result property="nl2sqlVisibilityLevel" column="nl2sql_visibility_level" />
+        <result property="grainDesc" column="grain_desc" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+        <result property="remark" column="remark" />
+    </resultMap>
+    <sql id="selectTableMetadataVo">
+        select id, table_name, table_comment, business_description, domain_id, vector_id, table_usage, nl2sql_visibility_level, grain_desc, create_by, create_time, update_by, update_time, remark 
+        from bi_table_metadata
+    </sql>
+    <select id="selectTableMetadataList" parameterType="TableMetadata" resultMap="TableMetadataResult">
+        <include refid="selectTableMetadataVo"/>
+        <where>
+            <if test="tableName != null and tableName != ''">and table_name like concat('%', #{tableName}, '%')</if>
+            <if test="tableComment != null and tableComment != ''">and table_comment like concat('%', #{tableComment}, '%')</if>
+            <if test="businessDescription != null and businessDescription != ''">and business_description like concat('%', #{businessDescription}, '%')</if>
+            <if test="tableUsage != null and tableUsage != ''">and table_usage = #{tableUsage}</if>
+            <if test="nl2sqlVisibilityLevel != null and nl2sqlVisibilityLevel != ''">and nl2sql_visibility_level = #{nl2sqlVisibilityLevel}</if>
+            <if test="domainId != null">and domain_id = #{domainId}</if>
+        </where>
+        order by create_time desc
+    </select>
+    <select id="selectTableMetadataById" parameterType="Long" resultMap="TableMetadataResult">
+        <include refid="selectTableMetadataVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectByTableName" resultMap="TableMetadataResult">
+        <include refid="selectTableMetadataVo"/>
+        where table_name = #{tableName} limit 1
+    </select>
+    <insert id="insertTableMetadata" parameterType="TableMetadata" useGeneratedKeys="true" keyProperty="id">
+        insert into bi_table_metadata
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tableName != null and tableName != ''">table_name,</if>
+            <if test="tableComment != null">table_comment,</if>
+            <if test="businessDescription != null">business_description,</if>
+            <if test="domainId != null">domain_id,</if>
+            <if test="vectorId != null">vector_id,</if>
+            <if test="tableUsage != null">table_usage,</if>
+            <if test="nl2sqlVisibilityLevel != null">nl2sql_visibility_level,</if>
+            <if test="grainDesc != null">grain_desc,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tableName != null and tableName != ''">#{tableName},</if>
+            <if test="tableComment != null">#{tableComment},</if>
+            <if test="businessDescription != null">#{businessDescription},</if>
+            <if test="domainId != null">#{domainId},</if>
+            <if test="vectorId != null">#{vectorId},</if>
+            <if test="tableUsage != null">#{tableUsage},</if>
+            <if test="nl2sqlVisibilityLevel != null">#{nl2sqlVisibilityLevel},</if>
+            <if test="grainDesc != null">#{grainDesc},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+    <update id="updateTableMetadata" parameterType="TableMetadata">
+        update bi_table_metadata
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="tableName != null and tableName != ''">table_name = #{tableName},</if>
+            <if test="tableComment != null">table_comment = #{tableComment},</if>
+            <if test="businessDescription != null">business_description = #{businessDescription},</if>
+            <if test="domainId != null">domain_id = #{domainId},</if>
+            <if test="vectorId != null">vector_id = #{vectorId},</if>
+            <if test="tableUsage != null">table_usage = #{tableUsage},</if>
+            <if test="nl2sqlVisibilityLevel != null">nl2sql_visibility_level = #{nl2sqlVisibilityLevel},</if>
+            <if test="grainDesc != null">grain_desc = #{grainDesc},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = now(),
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!-- 乐观锁：仅当 updateTime 与库中一致时更新，用于行内/单条编辑 -->
+    <update id="updateTableMetadataWithOptimisticLock" parameterType="TableMetadata">
+        update bi_table_metadata
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="tableUsage != null">table_usage = #{tableUsage},</if>
+            <if test="nl2sqlVisibilityLevel != null">nl2sql_visibility_level = #{nl2sqlVisibilityLevel},</if>
+            <if test="grainDesc != null">grain_desc = #{grainDesc},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = now(),
+        </trim>
+        where id = #{id}
+        and (update_time = #{updateTime} or (update_time is null and #{updateTime} is null))
+    </update>
+    <delete id="deleteTableMetadataById" parameterType="Long">
+        delete from bi_table_metadata where id = #{id}
+    </delete>
+    <delete id="deleteTableMetadataByIds" parameterType="String">
+        delete from bi_table_metadata where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="batchUpdateTableMetadata">
+        update bi_table_metadata
+        <set>
+            update_time = now(),
+            <if test="tableUsage != null">table_usage = #{tableUsage},</if>
+            <if test="nl2sqlVisibilityLevel != null">nl2sql_visibility_level = #{nl2sqlVisibilityLevel},</if>
+        </set>
+        where id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="selectTableMetadataListForNl2Sql" resultMap="TableMetadataResult">
+        <include refid="selectTableMetadataVo"/>
+        where nl2sql_visibility_level in ('NORMAL', 'PREFERRED')
+        <if test="tableIds != null and tableIds.size() > 0">
+            and id in
+            <foreach item="id" collection="tableIds" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        order by nl2sql_visibility_level = 'PREFERRED' desc, create_time desc
+    </select>
+
+    <select id="selectByKeywordForAutocomplete" resultMap="TableMetadataResult">
+        <include refid="selectTableMetadataVo"/>
+        where nl2sql_visibility_level in ('NORMAL', 'PREFERRED')
+        <if test="keyword != null and keyword != ''">
+            and (table_name LIKE CONCAT('%', #{keyword}, '%') OR table_comment LIKE CONCAT('%', #{keyword}, '%') OR business_description LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        order by nl2sql_visibility_level = 'PREFERRED' desc
+        limit #{limit}
+    </select>
+</mapper>

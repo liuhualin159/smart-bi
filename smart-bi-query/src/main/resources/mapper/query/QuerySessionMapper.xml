@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.lhl.query.mapper.QuerySessionMapper">
+    <resultMap type="QuerySession" id="QuerySessionResult">
+        <result property="id" column="id" />
+        <result property="userId" column="user_id" />
+        <result property="sessionKey" column="session_key" />
+        <result property="context" column="context" />
+        <result property="lastActiveTime" column="last_active_time" />
+        <result property="createTime" column="create_time" />
+        <result property="expireTime" column="expire_time" />
+    </resultMap>
+    <sql id="selectQuerySessionVo">
+        select id, user_id, session_key, context, last_active_time, create_time, expire_time 
+        from bi_query_session
+    </sql>
+    <select id="selectQuerySessionList" parameterType="QuerySession" resultMap="QuerySessionResult">
+        <include refid="selectQuerySessionVo"/>
+        <where>
+            <if test="userId != null">and user_id = #{userId}</if>
+            <if test="sessionKey != null and sessionKey != ''">and session_key = #{sessionKey}</if>
+        </where>
+        order by last_active_time desc
+    </select>
+    <select id="selectQuerySessionById" parameterType="Long" resultMap="QuerySessionResult">
+        <include refid="selectQuerySessionVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectQuerySessionBySessionKey" parameterType="String" resultMap="QuerySessionResult">
+        <include refid="selectQuerySessionVo"/>
+        where session_key = #{sessionKey}
+    </select>
+    <select id="selectQuerySessionByUserIdAndSessionKey" resultMap="QuerySessionResult">
+        <include refid="selectQuerySessionVo"/>
+        where user_id = #{userId} and session_key = #{sessionKey}
+    </select>
+    <insert id="insertQuerySession" parameterType="QuerySession" useGeneratedKeys="true" keyProperty="id">
+        insert into bi_query_session
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="sessionKey != null and sessionKey != ''">session_key,</if>
+            <if test="context != null">context,</if>
+            <if test="lastActiveTime != null">last_active_time,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="expireTime != null">expire_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="sessionKey != null and sessionKey != ''">#{sessionKey},</if>
+            <if test="context != null">#{context},</if>
+            <if test="lastActiveTime != null">#{lastActiveTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="expireTime != null">#{expireTime},</if>
+        </trim>
+    </insert>
+    <update id="updateQuerySession" parameterType="QuerySession">
+        update bi_query_session
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="context != null">context = #{context},</if>
+            <if test="lastActiveTime != null">last_active_time = #{lastActiveTime},</if>
+            <if test="expireTime != null">expire_time = #{expireTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <delete id="deleteQuerySessionById" parameterType="Long">
+        delete from bi_query_session where id = #{id}
+    </delete>
+    <delete id="deleteExpiredSessions">
+        delete from bi_query_session where expire_time &lt; now()
+    </delete>
+</mapper>

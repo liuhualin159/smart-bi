@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.lhl.metadata.mapper.FieldMetadataMapper">
+    <resultMap type="FieldMetadata" id="FieldMetadataResult">
+        <result property="id" column="id" />
+        <result property="tableId" column="table_id" />
+        <result property="fieldName" column="field_name" />
+        <result property="fieldType" column="field_type" />
+        <result property="fieldComment" column="field_comment" />
+        <result property="businessAlias" column="business_alias" />
+        <result property="businessDescription" column="business_description" />
+        <result property="enumValues" column="enum_values" />
+        <result property="isSensitive" column="is_sensitive" />
+        <result property="desensitizeRule" column="desensitize_rule" />
+        <result property="vectorId" column="vector_id" />
+        <result property="usageType" column="usage_type" />
+        <result property="semanticType" column="semantic_type" />
+        <result property="unit" column="unit" />
+        <result property="defaultAggFunc" column="default_agg_func" />
+        <result property="allowedAggFuncs" column="allowed_agg_funcs" />
+        <result property="nl2sqlPriority" column="nl2sql_priority" />
+        <result property="sensitiveLevel" column="sensitive_level" />
+        <result property="exposurePolicy" column="exposure_policy" />
+        <result property="drillPath" column="drill_path" />
+        <result property="displayFormat" column="display_format" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+        <result property="remark" column="remark" />
+    </resultMap>
+    <sql id="selectFieldMetadataVo">
+        select id, table_id, field_name, field_type, field_comment, business_alias, business_description, 
+               enum_values, is_sensitive, desensitize_rule, vector_id, usage_type, semantic_type, unit, default_agg_func, allowed_agg_funcs, nl2sql_priority, sensitive_level, exposure_policy, drill_path, display_format, create_by, create_time, update_by, update_time, remark 
+        from bi_field_metadata
+    </sql>
+    <select id="selectFieldMetadataList" parameterType="FieldMetadata" resultMap="FieldMetadataResult">
+        <include refid="selectFieldMetadataVo"/>
+        <where>
+            <if test="tableId != null">and table_id = #{tableId}</if>
+            <if test="fieldName != null and fieldName != ''">and field_name like concat('%', #{fieldName}, '%')</if>
+        </where>
+        order by create_time desc
+    </select>
+    <select id="selectFieldMetadataListByTableId" parameterType="Long" resultMap="FieldMetadataResult">
+        <include refid="selectFieldMetadataVo"/>
+        where table_id = #{tableId}
+        order by create_time desc
+    </select>
+    <select id="selectFieldMetadataById" parameterType="Long" resultMap="FieldMetadataResult">
+        <include refid="selectFieldMetadataVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectByKeywordForAutocomplete" resultMap="FieldMetadataResult">
+        <include refid="selectFieldMetadataVo"/>
+        <where>
+            <if test="keyword != null and keyword != ''">
+                and (field_name LIKE CONCAT('%', #{keyword}, '%') OR business_alias LIKE CONCAT('%', #{keyword}, '%') OR field_comment LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        order by nl2sql_priority desc, create_time desc
+        limit #{limit}
+    </select>
+    <insert id="insertFieldMetadata" parameterType="FieldMetadata" useGeneratedKeys="true" keyProperty="id">
+        insert into bi_field_metadata
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tableId != null">table_id,</if>
+            <if test="fieldName != null and fieldName != ''">field_name,</if>
+            <if test="fieldType != null">field_type,</if>
+            <if test="fieldComment != null">field_comment,</if>
+            <if test="businessAlias != null">business_alias,</if>
+            <if test="businessDescription != null">business_description,</if>
+            <if test="enumValues != null">enum_values,</if>
+            <if test="isSensitive != null">is_sensitive,</if>
+            <if test="desensitizeRule != null">desensitize_rule,</if>
+            <if test="vectorId != null">vector_id,</if>
+            <if test="usageType != null">usage_type,</if>
+            <if test="semanticType != null">semantic_type,</if>
+            <if test="unit != null">unit,</if>
+            <if test="defaultAggFunc != null">default_agg_func,</if>
+            <if test="allowedAggFuncs != null">allowed_agg_funcs,</if>
+            <if test="nl2sqlPriority != null">nl2sql_priority,</if>
+            <if test="sensitiveLevel != null">sensitive_level,</if>
+            <if test="exposurePolicy != null">exposure_policy,</if>
+            <if test="drillPath != null">drill_path,</if>
+            <if test="displayFormat != null">display_format,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tableId != null">#{tableId},</if>
+            <if test="fieldName != null and fieldName != ''">#{fieldName},</if>
+            <if test="fieldType != null">#{fieldType},</if>
+            <if test="fieldComment != null">#{fieldComment},</if>
+            <if test="businessAlias != null">#{businessAlias},</if>
+            <if test="businessDescription != null">#{businessDescription},</if>
+            <if test="enumValues != null">#{enumValues},</if>
+            <if test="isSensitive != null">#{isSensitive},</if>
+            <if test="desensitizeRule != null">#{desensitizeRule},</if>
+            <if test="vectorId != null">#{vectorId},</if>
+            <if test="usageType != null">#{usageType},</if>
+            <if test="semanticType != null">#{semanticType},</if>
+            <if test="unit != null">#{unit},</if>
+            <if test="defaultAggFunc != null">#{defaultAggFunc},</if>
+            <if test="allowedAggFuncs != null">#{allowedAggFuncs},</if>
+            <if test="nl2sqlPriority != null">#{nl2sqlPriority},</if>
+            <if test="sensitiveLevel != null">#{sensitiveLevel},</if>
+            <if test="exposurePolicy != null">#{exposurePolicy},</if>
+            <if test="drillPath != null">#{drillPath},</if>
+            <if test="displayFormat != null">#{displayFormat},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+    <update id="updateFieldMetadata" parameterType="FieldMetadata">
+        update bi_field_metadata
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="tableId != null">table_id = #{tableId},</if>
+            <if test="fieldName != null and fieldName != ''">field_name = #{fieldName},</if>
+            <if test="fieldType != null">field_type = #{fieldType},</if>
+            <if test="fieldComment != null">field_comment = #{fieldComment},</if>
+            <if test="businessAlias != null">business_alias = #{businessAlias},</if>
+            <if test="businessDescription != null">business_description = #{businessDescription},</if>
+            <if test="enumValues != null">enum_values = #{enumValues},</if>
+            <if test="isSensitive != null">is_sensitive = #{isSensitive},</if>
+            <if test="desensitizeRule != null">desensitize_rule = #{desensitizeRule},</if>
+            <if test="vectorId != null">vector_id = #{vectorId},</if>
+            <if test="usageType != null">usage_type = #{usageType},</if>
+            <if test="semanticType != null">semantic_type = #{semanticType},</if>
+            <if test="unit != null">unit = #{unit},</if>
+            <if test="defaultAggFunc != null">default_agg_func = #{defaultAggFunc},</if>
+            <if test="allowedAggFuncs != null">allowed_agg_funcs = #{allowedAggFuncs},</if>
+            <if test="nl2sqlPriority != null">nl2sql_priority = #{nl2sqlPriority},</if>
+            <if test="sensitiveLevel != null">sensitive_level = #{sensitiveLevel},</if>
+            <if test="exposurePolicy != null">exposure_policy = #{exposurePolicy},</if>
+            <if test="drillPath != null">drill_path = #{drillPath},</if>
+            <if test="displayFormat != null">display_format = #{displayFormat},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = now(),
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateFieldMetadataWithOptimisticLock" parameterType="FieldMetadata">
+        update bi_field_metadata
+        <set>
+            <if test="usageType != null">usage_type = #{usageType},</if>
+            <if test="semanticType != null">semantic_type = #{semanticType},</if>
+            <if test="unit != null">unit = #{unit},</if>
+            <if test="defaultAggFunc != null">default_agg_func = #{defaultAggFunc},</if>
+            <if test="allowedAggFuncs != null">allowed_agg_funcs = #{allowedAggFuncs},</if>
+            <if test="nl2sqlPriority != null">nl2sql_priority = #{nl2sqlPriority},</if>
+            <if test="sensitiveLevel != null">sensitive_level = #{sensitiveLevel},</if>
+            <if test="exposurePolicy != null">exposure_policy = #{exposurePolicy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = now(),
+        </set>
+        where id = #{id}
+        and (update_time = #{updateTime} or (update_time is null and #{updateTime} is null))
+    </update>
+    <delete id="deleteFieldMetadataById" parameterType="Long">
+        delete from bi_field_metadata where id = #{id}
+    </delete>
+    <delete id="deleteFieldMetadataByIds" parameterType="String">
+        delete from bi_field_metadata where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.lhl.query.mapper.FeedbackCorrectionMapper">
+    <resultMap type="FeedbackCorrection" id="FeedbackCorrectionResult">
+        <result property="id" column="id" />
+        <result property="queryId" column="query_id" />
+        <result property="originalQuestion" column="original_question" />
+        <result property="correctedSql" column="corrected_sql" />
+        <result property="reviewedBy" column="reviewed_by" />
+        <result property="reviewedAt" column="reviewed_at" />
+        <result property="status" column="status" />
+        <result property="usedInNl2sql" column="used_in_nl2sql" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+        <result property="remark" column="remark" />
+    </resultMap>
+    <sql id="selectFeedbackCorrectionVo">
+        select id, query_id, original_question, corrected_sql, reviewed_by, reviewed_at, status, used_in_nl2sql,
+               create_by, create_time, update_by, update_time, remark
+        from bi_feedback_correction
+    </sql>
+    <select id="selectById" parameterType="Long" resultMap="FeedbackCorrectionResult">
+        <include refid="selectFeedbackCorrectionVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectByStatus" parameterType="String" resultMap="FeedbackCorrectionResult">
+        <include refid="selectFeedbackCorrectionVo"/>
+        where status = #{status}
+    </select>
+    <insert id="insert" parameterType="FeedbackCorrection" useGeneratedKeys="true" keyProperty="id">
+        insert into bi_feedback_correction
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="queryId != null">query_id,</if>
+            <if test="originalQuestion != null">original_question,</if>
+            <if test="correctedSql != null">corrected_sql,</if>
+            <if test="reviewedBy != null">reviewed_by,</if>
+            <if test="reviewedAt != null">reviewed_at,</if>
+            <if test="status != null">status,</if>
+            <if test="usedInNl2sql != null">used_in_nl2sql,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="queryId != null">#{queryId},</if>
+            <if test="originalQuestion != null">#{originalQuestion},</if>
+            <if test="correctedSql != null">#{correctedSql},</if>
+            <if test="reviewedBy != null">#{reviewedBy},</if>
+            <if test="reviewedAt != null">#{reviewedAt},</if>
+            <if test="status != null">#{status},</if>
+            <if test="usedInNl2sql != null">#{usedInNl2sql},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+    <update id="updateById" parameterType="FeedbackCorrection">
+        update bi_feedback_correction
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="usedInNl2sql != null">used_in_nl2sql = #{usedInNl2sql},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+</mapper>

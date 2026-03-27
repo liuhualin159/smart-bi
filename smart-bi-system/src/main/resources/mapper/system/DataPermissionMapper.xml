@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.lhl.system.mapper.DataPermissionMapper">
+    
+    <resultMap type="dev.lhl.common.core.domain.DataPermission" id="DataPermissionResult">
+        <result property="id"            column="id"            />
+        <result property="userId"        column="user_id"       />
+        <result property="roleId"        column="role_id"       />
+        <result property="permissionType" column="permission_type" />
+        <result property="tableName"     column="table_name"    />
+        <result property="fieldName"     column="field_name"    />
+        <result property="operation"    column="operation"     />
+        <result property="rowFilter"     column="row_filter"    />
+        <result property="createBy"      column="create_by"     />
+        <result property="createTime"    column="create_time"   />
+        <result property="updateBy"      column="update_by"     />
+        <result property="updateTime"    column="update_time"   />
+        <result property="remark"        column="remark"        />
+    </resultMap>
+
+    <sql id="selectDataPermissionVo">
+        select id, user_id, role_id, permission_type, table_name, field_name, operation, row_filter,
+               create_by, create_time, update_by, update_time, remark
+        from bi_data_permission
+    </sql>
+
+    <select id="selectDataPermissionList" parameterType="dev.lhl.common.core.domain.DataPermission" resultMap="DataPermissionResult">
+        <include refid="selectDataPermissionVo"/>
+        <where>  
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="roleId != null">
+                and role_id = #{roleId}
+            </if>
+            <if test="permissionType != null and permissionType != ''">
+                and permission_type = #{permissionType}
+            </if>
+            <if test="tableName != null and tableName != ''">
+                and table_name = #{tableName}
+            </if>
+            <if test="fieldName != null and fieldName != ''">
+                and field_name = #{fieldName}
+            </if>
+            <if test="operation != null and operation != ''">
+                and operation = #{operation}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectDataPermissionById" parameterType="Long" resultMap="DataPermissionResult">
+        <include refid="selectDataPermissionVo"/>
+        where id = #{id}
+    </select>
+    
+    <select id="selectDataPermissionByUserAndTable" resultMap="DataPermissionResult">
+        <include refid="selectDataPermissionVo"/>
+        where (user_id = #{userId} or user_id is null)
+        and table_name = #{tableName}
+        order by permission_type, field_name
+    </select>
+    
+    <select id="selectDataPermissionByRoleAndTable" resultMap="DataPermissionResult">
+        <include refid="selectDataPermissionVo"/>
+        where (role_id = #{roleId} or role_id is null)
+        and table_name = #{tableName}
+        order by permission_type, field_name
+    </select>
+        
+    <insert id="insertDataPermission" parameterType="dev.lhl.common.core.domain.DataPermission" useGeneratedKeys="true" keyProperty="id">
+        insert into bi_data_permission
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="roleId != null">role_id,</if>
+            <if test="permissionType != null and permissionType != ''">permission_type,</if>
+            <if test="tableName != null and tableName != ''">table_name,</if>
+            <if test="fieldName != null">field_name,</if>
+            <if test="operation != null and operation != ''">operation,</if>
+            <if test="rowFilter != null">row_filter,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="roleId != null">#{roleId},</if>
+            <if test="permissionType != null and permissionType != ''">#{permissionType},</if>
+            <if test="tableName != null and tableName != ''">#{tableName},</if>
+            <if test="fieldName != null">#{fieldName},</if>
+            <if test="operation != null and operation != ''">#{operation},</if>
+            <if test="rowFilter != null">#{rowFilter},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDataPermission" parameterType="dev.lhl.common.core.domain.DataPermission">
+        update bi_data_permission
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="roleId != null">role_id = #{roleId},</if>
+            <if test="permissionType != null and permissionType != ''">permission_type = #{permissionType},</if>
+            <if test="tableName != null and tableName != ''">table_name = #{tableName},</if>
+            <if test="fieldName != null">field_name = #{fieldName},</if>
+            <if test="operation != null and operation != ''">operation = #{operation},</if>
+            <if test="rowFilter != null">row_filter = #{rowFilter},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDataPermissionById" parameterType="Long">
+        delete from bi_data_permission where id = #{id}
+    </delete>
+
+    <delete id="deleteDataPermissionByIds" parameterType="String">
+        delete from bi_data_permission where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

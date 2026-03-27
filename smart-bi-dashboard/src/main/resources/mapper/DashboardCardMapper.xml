@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.lhl.dashboard.mapper.DashboardCardMapper">
+    <resultMap type="DashboardCard" id="DashboardCardResult">
+        <result property="id" column="id" />
+        <result property="dashboardId" column="dashboard_id" />
+        <result property="cardId" column="card_id" />
+        <result property="positionX" column="position_x" />
+        <result property="positionY" column="position_y" />
+        <result property="width" column="width" />
+        <result property="height" column="height" />
+        <result property="sortOrder" column="sort_order" />
+        <result property="componentType" column="component_type" />
+        <result property="styleConfig" column="style_config" />
+        <result property="parentId" column="parent_id" />
+        <result property="decorationType" column="decoration_type" />
+        <result property="cardName" column="card_name" />
+    </resultMap>
+    <sql id="selectDashboardCardVo">
+        select id, dashboard_id, card_id, position_x, position_y, width, height, sort_order,
+               component_type, style_config, parent_id, decoration_type, card_name
+        from bi_dashboard_card
+    </sql>
+    <select id="selectDashboardCardListByDashboardId" parameterType="Long" resultMap="DashboardCardResult">
+        <include refid="selectDashboardCardVo"/>
+        where dashboard_id = #{dashboardId}
+        order by sort_order
+    </select>
+    <insert id="insertDashboardCard" parameterType="DashboardCard" useGeneratedKeys="true" keyProperty="id">
+        insert into bi_dashboard_card
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dashboardId != null">dashboard_id,</if>
+            <if test="cardId != null">card_id,</if>
+            <if test="positionX != null">position_x,</if>
+            <if test="positionY != null">position_y,</if>
+            <if test="width != null">width,</if>
+            <if test="height != null">height,</if>
+            <if test="sortOrder != null">sort_order,</if>
+            <if test="componentType != null">component_type,</if>
+            <if test="styleConfig != null">style_config,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="decorationType != null">decoration_type,</if>
+            <if test="cardName != null">card_name,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dashboardId != null">#{dashboardId},</if>
+            <if test="cardId != null">#{cardId},</if>
+            <if test="positionX != null">#{positionX},</if>
+            <if test="positionY != null">#{positionY},</if>
+            <if test="width != null">#{width},</if>
+            <if test="height != null">#{height},</if>
+            <if test="sortOrder != null">#{sortOrder},</if>
+            <if test="componentType != null">#{componentType},</if>
+            <if test="styleConfig != null">#{styleConfig},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="decorationType != null">#{decorationType},</if>
+            <if test="cardName != null">#{cardName},</if>
+        </trim>
+    </insert>
+    <update id="updateDashboardCard" parameterType="DashboardCard">
+        update bi_dashboard_card
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="positionX != null">position_x = #{positionX},</if>
+            <if test="positionY != null">position_y = #{positionY},</if>
+            <if test="width != null">width = #{width},</if>
+            <if test="height != null">height = #{height},</if>
+            <if test="sortOrder != null">sort_order = #{sortOrder},</if>
+            <if test="componentType != null">component_type = #{componentType},</if>
+            <if test="styleConfig != null">style_config = #{styleConfig},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="decorationType != null">decoration_type = #{decorationType},</if>
+            <if test="cardName != null">card_name = #{cardName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <select id="selectChildCards" parameterType="Long" resultMap="DashboardCardResult">
+        <include refid="selectDashboardCardVo"/>
+        where parent_id = #{parentId}
+        order by sort_order
+    </select>
+    <delete id="deleteDashboardCardById" parameterType="Long">
+        delete from bi_dashboard_card where id = #{id}
+    </delete>
+    <delete id="deleteDashboardCardByDashboardId" parameterType="Long">
+        delete from bi_dashboard_card where dashboard_id = #{dashboardId}
+    </delete>
+</mapper>

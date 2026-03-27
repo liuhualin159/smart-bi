@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.lhl.etl.mapper.EtlTaskMapper">
+    
+    <resultMap type="EtlTask" id="EtlTaskResult">
+        <result property="id"                column="id"                />
+        <result property="name"              column="name"              />
+        <result property="datasourceId"      column="datasource_id"     />
+        <result property="sourceType"        column="source_type"       />
+        <result property="sourceConfig"     column="source_config"     />
+        <result property="targetTable"      column="target_table"      />
+        <result property="extractMode"      column="extract_mode"      />
+        <result property="incrementField"   column="increment_field"  />
+        <result property="incrementType"    column="increment_type"    />
+        <result property="scheduleType"     column="schedule_type"     />
+        <result property="cronExpression"   column="cron_expression"   />
+        <result property="retryCount"        column="retry_count"       />
+        <result property="retryInterval"    column="retry_interval"    />
+        <result property="status"            column="status"            />
+        <result property="lastRunTime"      column="last_run_time"     />
+        <result property="nextRunTime"      column="next_run_time"      />
+        <result property="createBy"          column="create_by"          />
+        <result property="createTime"        column="create_time"        />
+        <result property="updateBy"          column="update_by"         />
+        <result property="updateTime"        column="update_time"       />
+        <result property="remark"            column="remark"           />
+    </resultMap>
+
+    <sql id="selectEtlTaskVo">
+        select id, name, datasource_id, source_type, source_config, target_table, extract_mode, 
+               increment_field, increment_type, schedule_type, cron_expression, retry_count, 
+               retry_interval, status, last_run_time, next_run_time, create_by, create_time, 
+               update_by, update_time, remark 
+        from bi_etl_task
+    </sql>
+
+    <select id="selectEtlTaskList" parameterType="EtlTask" resultMap="EtlTaskResult">
+        <include refid="selectEtlTaskVo"/>
+        <where>  
+            <if test="name != null and name != ''">
+                and name like concat('%', #{name}, '%')
+            </if>
+            <if test="datasourceId != null">
+                and datasource_id = #{datasourceId}
+            </if>
+            <if test="sourceType != null and sourceType != ''">
+                and source_type = #{sourceType}
+            </if>
+            <if test="extractMode != null and extractMode != ''">
+                and extract_mode = #{extractMode}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectEtlTaskById" parameterType="Long" resultMap="EtlTaskResult">
+        <include refid="selectEtlTaskVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertEtlTask" parameterType="EtlTask" useGeneratedKeys="true" keyProperty="id">
+        insert into bi_etl_task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="datasourceId != null">datasource_id,</if>
+            <if test="sourceType != null and sourceType != ''">source_type,</if>
+            <if test="sourceConfig != null">source_config,</if>
+            <if test="targetTable != null and targetTable != ''">target_table,</if>
+            <if test="extractMode != null and extractMode != ''">extract_mode,</if>
+            <if test="incrementField != null">increment_field,</if>
+            <if test="incrementType != null">increment_type,</if>
+            <if test="scheduleType != null">schedule_type,</if>
+            <if test="cronExpression != null">cron_expression,</if>
+            <if test="retryCount != null">retry_count,</if>
+            <if test="retryInterval != null">retry_interval,</if>
+            <if test="status != null">status,</if>
+            <if test="lastRunTime != null">last_run_time,</if>
+            <if test="nextRunTime != null">next_run_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="datasourceId != null">#{datasourceId},</if>
+            <if test="sourceType != null and sourceType != ''">#{sourceType},</if>
+            <if test="sourceConfig != null">#{sourceConfig},</if>
+            <if test="targetTable != null and targetTable != ''">#{targetTable},</if>
+            <if test="extractMode != null and extractMode != ''">#{extractMode},</if>
+            <if test="incrementField != null">#{incrementField},</if>
+            <if test="incrementType != null">#{incrementType},</if>
+            <if test="scheduleType != null">#{scheduleType},</if>
+            <if test="cronExpression != null">#{cronExpression},</if>
+            <if test="retryCount != null">#{retryCount},</if>
+            <if test="retryInterval != null">#{retryInterval},</if>
+            <if test="status != null">#{status},</if>
+            <if test="lastRunTime != null">#{lastRunTime},</if>
+            <if test="nextRunTime != null">#{nextRunTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateEtlTask" parameterType="EtlTask">
+        update bi_etl_task
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="datasourceId != null">datasource_id = #{datasourceId},</if>
+            <if test="sourceType != null and sourceType != ''">source_type = #{sourceType},</if>
+            <if test="sourceConfig != null">source_config = #{sourceConfig},</if>
+            <if test="targetTable != null and targetTable != ''">target_table = #{targetTable},</if>
+            <if test="extractMode != null and extractMode != ''">extract_mode = #{extractMode},</if>
+            <if test="incrementField != null">increment_field = #{incrementField},</if>
+            <if test="incrementType != null">increment_type = #{incrementType},</if>
+            <if test="scheduleType != null">schedule_type = #{scheduleType},</if>
+            <if test="cronExpression != null">cron_expression = #{cronExpression},</if>
+            <if test="retryCount != null">retry_count = #{retryCount},</if>
+            <if test="retryInterval != null">retry_interval = #{retryInterval},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="lastRunTime != null">last_run_time = #{lastRunTime},</if>
+            <if test="nextRunTime != null">next_run_time = #{nextRunTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteEtlTaskById" parameterType="Long">
+        delete from bi_etl_task where id = #{id}
+    </delete>
+
+    <delete id="deleteEtlTaskByIds" parameterType="String">
+        delete from bi_etl_task where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

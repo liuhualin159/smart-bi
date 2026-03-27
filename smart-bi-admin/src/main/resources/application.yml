@@ -1,0 +1,265 @@
+# 项目相关配置
+ruoyi:
+  # 名称
+  name: Smart-BI
+  # 版本
+  version: 3.9.1
+  # 版权年份
+  copyrightYear: 2026
+  # 文件路径 示例（ Windows配置D:/ruoyi/uploadPath，Linux配置 /home/ruoyi/uploadPath）
+  profile: C:/ruoyi/uploadPath
+  # 获取ip地址开关
+  addressEnabled: false
+  # 验证码类型 math 数字计算 char 字符验证
+  captchaType: math
+
+# 分享链接配置（分享链接指向前端地址，前端默认端口80，如不同可设置 SHARE_BASE_URL 环境变量）
+share:
+  base-url: ${SHARE_BASE_URL:http://localhost}
+
+# 开发环境配置
+server:
+  # 服务器的HTTP端口，默认为8080
+  port: 1111
+  servlet:
+    # 应用的访问路径
+    context-path: /
+  tomcat:
+    # tomcat的URI编码
+    uri-encoding: UTF-8
+    # 连接数满后的排队数，默认为100
+    accept-count: 1000
+    threads:
+      # tomcat最大线程数，默认为200
+      max: 800
+      # Tomcat启动初始化的线程数，默认值10
+      min-spare: 100
+
+# 日志配置
+logging:
+  level:
+    dev.lhl: debug
+    org.springframework: warn
+    # 启用Spring AI和HTTP客户端日志，用于调试向量化API调用
+    org.springframework.ai: debug
+    org.springframework.ai.openai: debug
+    org.springframework.web.client: debug
+    org.springframework.ai.openai.api.OpenAiApi: debug
+    # 启用HTTP请求/响应日志（包括URL）
+    org.springframework.web.client.RestClient: trace
+    org.apache.http: debug
+    org.apache.http.wire: debug
+
+# 用户配置
+user:
+  password:
+    # 密码最大错误次数
+    maxRetryCount: 5
+    # 密码锁定时间（默认10分钟）
+    lockTime: 10
+
+# Spring配置
+spring:
+  # 资源信息
+  messages:
+    # 国际化资源文件路径
+    basename: i18n/messages
+  profiles:
+    active: druid
+  # 文件上传
+  servlet:
+    multipart:
+      # 单个文件大小
+      max-file-size: 10MB
+      # 设置总上传的文件大小
+      max-request-size: 20MB
+  # 服务模块
+  devtools:
+    restart:
+      # 热部署开关
+      enabled: true
+  data:
+    # redis 配置
+    redis:
+      # Redis服务器地址
+      host: ${REDIS_HOST:localhost}
+      # Redis服务器连接端口
+      port: ${REDIS_PORT:16379}
+      # Redis服务器连接密码
+      password: ${REDIS_PASSWORD:}
+      # Redis数据库索引（默认为0）
+      database: 15
+      # 连接超时时间
+      timeout: 10s
+      lettuce:
+        pool:
+          # 连接池中的最小空闲连接
+          min-idle: 0
+          # 连接池中的最大空闲连接
+          max-idle: 8
+          # 连接池的最大数据库连接数
+          max-active: 8
+          # #连接池最大阻塞等待时间（使用负值表示没有限制）
+          max-wait: -1ms
+  # Spring AI配置
+  ai:
+    # OpenAI配置（兼容OpenAI API，可用于阿里云百炼等兼容OpenAI API的平台）
+    openai:
+      # 对话模型配置
+      api-key: ${CHAT_API_KEY:${OPENAI_API_KEY:}}
+      # 对话模型的base-url（不要包含具体路径，Spring AI会自动添加）
+      # 阿里云百炼对话模型：https://dashscope.aliyuncs.com/compatible-mode/v1
+      # OpenAI：https://api.openai.com
+      base-url: ${CHAT_BASE_URL:${OPENAI_BASE_URL:https://dashscope.aliyuncs.com/compatible-mode/v1}}
+      # HTTP 客户端超时（大模型响应较慢时避免过早中断）
+      # 读超时：等待模型返回的最长时间（Spring AI 原生支持时生效）
+      read-timeout: ${SPRING_AI_OPENAI_READ_TIMEOUT:120s}
+      # 超时秒数（供 RestClientCustomizer 使用，与 read-timeout 二选一或同时生效）
+      timeout: ${SPRING_AI_OPENAI_TIMEOUT:120}
+      chat:
+        options:
+          # 对话模型名称
+          # 阿里云百炼：qwen-plus, qwen-turbo, qwen-max等
+          # OpenAI：gpt-4, gpt-3.5-turbo等
+          model: ${CHAT_MODEL:${OPENAI_MODEL:qwen3-235b-a22b-thinking-2507}}
+          temperature: 0.7
+          max-tokens: 2000
+        completions-path: /chat/completions
+      # Embedding模型配置（用于向量化）
+      # 注意：根据阿里云官方示例，对话和向量模型使用相同的base-url
+      # Spring AI 1.1.0 可能不支持独立的 embedding.base-url 配置
+      # 因此不配置 embedding.base-url，让 Spring AI 自动使用 openai.base-url
+      embedding:
+        # Embedding API的路径（默认是 /v1/embeddings，但阿里云base-url已包含/v1，所以改为 /embeddings）
+        # 这样可以避免URL重复：https://dashscope.aliyuncs.com/compatible-mode/v1/v1/embeddings
+        embeddings-path: ${EMBEDDING_PATH:/embeddings}
+        # 注意：不配置 base-url，Spring AI 会自动使用 openai.base-url
+        # 不配置 api-key，Spring AI 会自动使用 openai.api-key
+        options:
+          # 向量模型名称（阿里云百炼：text-embedding-v1, text-embedding-v2, text-embedding-v4）
+          model: ${EMBEDDING_MODEL:text-embedding-v4}
+          # 向量维度（根据模型确定：text-embedding-v4=1024, text-embedding-v1/v2=1536）
+          dimensions: ${EMBEDDING_DIMENSIONS:1024}
+    # Qdrant向量存储配置
+    # 注意：Qdrant服务需要单独启动，请参考 doc/Qdrant安装和启动指南.md
+    # 如果gRPC连接失败，可以尝试使用HTTP模式（useHttp: true）
+    vectorstore:
+      qdrant:
+        # 使用127.0.0.1而不是localhost，避免IPv6解析问题（[0:0:0:0:0:0:0:1]）
+        host: ${QDRANT_HOST:localhost}
+        # gRPC端口（默认6334；HTTP为6333）
+        port: ${QDRANT_PORT:6334}
+        # API密钥：若Qdrant启用了认证（如Qdrant Cloud或自建时设置QDRANT__SERVICE__API_KEY），必须配置此项
+        # 本地无认证Qdrant留空即可
+        api-key: ${QDRANT_API_KEY:soft_embedding_key}
+        collection-name: smart-bi-metadata
+        # 向量维度（必须与Embedding模型的输出维度一致）
+        vector-dimension: ${VECTOR_DIMENSION:1024}
+        # 不存在时自动创建 Collection（首次启动或 Qdrant 为空时）
+        initialize-schema: true
+        use-tls: false
+
+# DataX ETL引擎配置
+datax:
+  # DataX安装路径（需要安装DataX完整包）
+  # Linux/Mac: /opt/datax
+  # Windows: D:/datax
+  homePath: ${DATAX_HOME:C:/workspace/datax}
+  # Python可执行文件路径
+  pythonPath: ${DATAX_PYTHON:python}
+  # 任务执行超时时间（秒）
+  timeout: 3600
+  # 并发线程数
+  threadCount: 1
+  # 通道记录数
+  channelRecordCount: 1000
+
+# Agent BI V2 智能问数配置
+smart:
+  bi:
+    query:
+      preprocess:
+        enabled: true
+      summarize:
+        enabled: true
+    nl2sql:
+      confidence:
+        threshold: 0.6
+      selfCorrection:
+        enabled: true
+        maxRetries: 2
+      syntaxPrecheck:
+        enabled: true
+        fallbackOnParseError: false
+      fewshot:
+        enabled: true
+        topK: 3
+        similarityThreshold: 0.7
+    feedback:
+      similarity:
+        threshold: 0.8
+
+# token配置
+token:
+  # 令牌自定义标识
+  header: Authorization
+  # 令牌密钥
+  secret: abcdefghijklmnopqrstuvwxyz
+  # 令牌有效期（默认30分钟）
+  expireTime: 30
+
+# MyBatis配置
+mybatis:
+  # 搜索指定包别名
+  typeAliasesPackage: dev.lhl.**.domain
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  mapperLocations: classpath*:mapper/**/*Mapper.xml
+  # 加载全局的配置文件
+  configLocation: classpath:mybatis/mybatis-config.xml
+
+# PageHelper分页插件
+pagehelper:
+  helperDialect: mysql
+  supportMethodsArguments: true
+  params: count=countSql
+
+# Springdoc配置
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    tags-sorter: alpha
+  group-configs:
+    - group: 'default'
+      display-name: '测试模块'
+      paths-to-match: '/**'
+      packages-to-scan: dev.lhl.web.controller.tool
+
+# 防盗链配置
+referer:
+  # 防盗链开关
+  enabled: false
+  # 允许的域名列表
+  allowed-domains: localhost,127.0.0.1,ruoyi.vip,www.ruoyi.vip
+
+# 防止XSS攻击
+xss:
+  # 过滤开关
+  enabled: true
+  # 排除链接（多个用逗号分隔）
+  excludes: /system/notice
+  # 匹配链接
+  urlPatterns: /system/*,/monitor/*,/tool/*
+
+# Qdrant向量数据库配置（自定义配置，用于非Spring AI场景）
+qdrant:
+  host: localhost
+  port: 6333
+  # API密钥（可选）
+  api-key:
+  # 是否使用HTTPS
+  use-https: false
+  # 连接超时时间（秒）
+  timeout: 30

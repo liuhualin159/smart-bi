@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>smart-bi</artifactId>
+        <groupId>dev.lhl</groupId>
+        <version>3.9.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>smart-bi-etl</artifactId>
+
+    <description>
+        ETL管理模块
+    </description>
+
+    <dependencies>
+        <!-- 通用工具模块 -->
+        <dependency>
+            <groupId>dev.lhl</groupId>
+            <artifactId>smart-bi-common</artifactId>
+        </dependency>
+
+        <!-- 数据源管理模块 -->
+        <dependency>
+            <groupId>dev.lhl</groupId>
+            <artifactId>smart-bi-datasource</artifactId>
+        </dependency>
+
+        <!-- 定时任务模块 -->
+        <dependency>
+            <groupId>dev.lhl</groupId>
+            <artifactId>smart-bi-quartz</artifactId>
+        </dependency>
+
+        <!-- 系统管理模块（用于通知功能） -->
+        <dependency>
+            <groupId>dev.lhl</groupId>
+            <artifactId>smart-bi-system</artifactId>
+        </dependency>
+
+        <!-- MyBatis -->
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- DataX ETL引擎 -->
+        <!-- 注意：DataX不在Maven中央仓库，需要单独安装或使用本地仓库 -->
+        <!-- 如需使用DataX功能，请安装DataX后配置本地Maven仓库，或取消下面的注释 -->
+        <!--
+        <dependency>
+            <groupId>com.alibaba.datax</groupId>
+            <artifactId>datax-core</artifactId>
+        </dependency>
+        -->
+    </dependencies>
+
+</project>

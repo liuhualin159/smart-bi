@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.lhl.quality.mapper.BiQualityScoreMapper">
+    <resultMap type="dev.lhl.quality.domain.BiQualityScore" id="BiQualityScoreResult">
+        <result property="id" column="id" />
+        <result property="tableId" column="table_id" />
+        <result property="score" column="score" />
+        <result property="scoreType" column="score_type" />
+        <result property="fieldId" column="field_id" />
+        <result property="calculatedAt" column="calculated_at" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="remark" column="remark" />
+    </resultMap>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into bi_quality_score (table_id, score, score_type, field_id, calculated_at, create_by, create_time, remark)
+        values (#{tableId}, #{score}, #{scoreType}, #{fieldId}, #{calculatedAt}, #{createBy}, #{createTime}, #{remark})
+    </insert>
+    <select id="selectByTableId" resultMap="BiQualityScoreResult">
+        select id, table_id, score, score_type, field_id, calculated_at, create_by, create_time, remark
+        from bi_quality_score where table_id = #{tableId} order by calculated_at desc
+    </select>
+    <select id="selectLatestByTableAndType" resultMap="BiQualityScoreResult">
+        select id, table_id, score, score_type, field_id, calculated_at, create_by, create_time, remark
+        from bi_quality_score where table_id = #{tableId} and score_type = #{scoreType}
+        order by calculated_at desc limit 1
+    </select>
+</mapper>

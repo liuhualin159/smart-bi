@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.lhl.query.mapper.LlmAuditMapper">
+    
+    <resultMap type="dev.lhl.query.domain.LlmAudit" id="LlmAuditResult">
+        <result property="id"             column="id"              />
+        <result property="queryRecordId"  column="query_id"        />
+        <result property="userId"         column="user_id"        />
+        <result property="originalQuestion" column="original_question" />
+        <result property="recalledTables" column="recalled_tables" />
+        <result property="generatedSql"   column="generated_sql"   />
+        <result property="modelName"      column="model_name"      />
+        <result property="tokenUsage"     column="token_usage"    />
+        <result property="responseTime"  column="response_time"  />
+        <result property="createTime"     column="create_time"    />
+        <result property="promptVersion" column="prompt_version" />
+        <result property="metaSchemaVersion" column="meta_schema_version" />
+        <result property="errorCategory"  column="error_category" />
+        <result property="processStatus"  column="process_status" />
+        <result property="retryCount"     column="retry_count" />
+        <result property="finalSql"       column="final_sql" />
+    </resultMap>
+
+    <sql id="selectLlmAuditVo">
+        select id, query_id, user_id, original_question, recalled_tables, generated_sql,
+               model_name, token_usage, response_time, create_time, prompt_version, meta_schema_version, error_category, process_status,
+               retry_count, final_sql
+        from bi_llm_audit
+    </sql>
+
+    <select id="selectLlmAuditList" parameterType="dev.lhl.query.domain.LlmAudit" resultMap="LlmAuditResult">
+        <include refid="selectLlmAuditVo"/>
+        <where>  
+            <if test="queryRecordId != null">
+                and query_id = #{queryRecordId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="modelName != null and modelName != ''">
+                and model_name = #{modelName}
+            </if>
+            <if test="errorCategory != null and errorCategory != ''">
+                and error_category = #{errorCategory}
+            </if>
+            <if test="processStatus != null and processStatus != ''">
+                and process_status = #{processStatus}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectLlmAuditById" parameterType="Long" resultMap="LlmAuditResult">
+        <include refid="selectLlmAuditVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertLlmAudit" parameterType="dev.lhl.query.domain.LlmAudit" useGeneratedKeys="true" keyProperty="id">
+        insert into bi_llm_audit
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="queryRecordId != null">query_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="originalQuestion != null">original_question,</if>
+            <if test="recalledTables != null">recalled_tables,</if>
+            <if test="generatedSql != null">generated_sql,</if>
+            <if test="modelName != null">model_name,</if>
+            <if test="tokenUsage != null">token_usage,</if>
+            <if test="responseTime != null">response_time,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="promptVersion != null">prompt_version,</if>
+            <if test="metaSchemaVersion != null">meta_schema_version,</if>
+            <if test="errorCategory != null">error_category,</if>
+            <if test="processStatus != null">process_status,</if>
+            <if test="retryCount != null">retry_count,</if>
+            <if test="finalSql != null">final_sql,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="queryRecordId != null">#{queryRecordId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="originalQuestion != null">#{originalQuestion},</if>
+            <if test="recalledTables != null">#{recalledTables},</if>
+            <if test="generatedSql != null">#{generatedSql},</if>
+            <if test="modelName != null">#{modelName},</if>
+            <if test="tokenUsage != null">#{tokenUsage},</if>
+            <if test="responseTime != null">#{responseTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="promptVersion != null">#{promptVersion},</if>
+            <if test="metaSchemaVersion != null">#{metaSchemaVersion},</if>
+            <if test="errorCategory != null">#{errorCategory},</if>
+            <if test="processStatus != null">#{processStatus},</if>
+            <if test="retryCount != null">#{retryCount},</if>
+            <if test="finalSql != null">#{finalSql},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLlmAudit" parameterType="dev.lhl.query.domain.LlmAudit">
+        update bi_llm_audit
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="queryRecordId != null">query_id = #{queryRecordId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="originalQuestion != null">original_question = #{originalQuestion},</if>
+            <if test="recalledTables != null">recalled_tables = #{recalledTables},</if>
+            <if test="generatedSql != null">generated_sql = #{generatedSql},</if>
+            <if test="modelName != null">model_name = #{modelName},</if>
+            <if test="tokenUsage != null">token_usage = #{tokenUsage},</if>
+            <if test="responseTime != null">response_time = #{responseTime},</if>
+            <if test="promptVersion != null">prompt_version = #{promptVersion},</if>
+            <if test="metaSchemaVersion != null">meta_schema_version = #{metaSchemaVersion},</if>
+            <if test="errorCategory != null">error_category = #{errorCategory},</if>
+            <if test="processStatus != null">process_status = #{processStatus},</if>
+            <if test="retryCount != null">retry_count = #{retryCount},</if>
+            <if test="finalSql != null">final_sql = #{finalSql},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLlmAuditById" parameterType="Long">
+        delete from bi_llm_audit where id = #{id}
+    </delete>
+
+    <delete id="deleteLlmAuditByIds" parameterType="String">
+        delete from bi_llm_audit where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectLlmAuditListSince" resultMap="LlmAuditResult">
+        <include refid="selectLlmAuditVo"/>
+        where create_time &gt;= #{startTime}
+        and error_category is not null and error_category != ''
+        order by create_time desc
+    </select>
+
+    <select id="selectLlmAuditListForAmbiguity" resultMap="LlmAuditResult">
+        <include refid="selectLlmAuditVo"/>
+        <where>
+            and error_category is not null and error_category != ''
+            <if test="errorCategory != null and errorCategory != ''">
+                and error_category = #{errorCategory}
+            </if>
+            <if test="tableName != null and tableName != ''">
+                and (recalled_tables LIKE CONCAT('%', #{tableName}, '%') OR generated_sql LIKE CONCAT('%', #{tableName}, '%'))
+            </if>
+            <if test="startTime != null">
+                and create_time &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+                and create_time &lt;= #{endTime}
+            </if>
+            <if test="processStatus != null and processStatus != ''">
+                <choose>
+                    <when test="processStatus == 'PENDING'">
+                        and (process_status IS NULL OR process_status = '')
+                    </when>
+                    <otherwise>
+                        and process_status = #{processStatus}
+                    </otherwise>
+                </choose>
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectLlmAuditListForAmbiguitySummary" resultMap="LlmAuditResult">
+        <include refid="selectLlmAuditVo"/>
+        where error_category is not null and error_category != ''
+        <if test="startTime != null">and create_time &gt;= #{startTime}</if>
+        <if test="endTime != null">and create_time &lt;= #{endTime}</if>
+        order by create_time desc
+        limit 3000
+    </select>
+</mapper>

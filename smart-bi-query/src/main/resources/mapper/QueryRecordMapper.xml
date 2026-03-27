@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.lhl.query.mapper.QueryRecordMapper">
+    <resultMap type="QueryRecord" id="QueryRecordResult">
+        <result property="id" column="id" />
+        <result property="sessionId" column="session_id" />
+        <result property="userId" column="user_id" />
+        <result property="question" column="question" />
+        <result property="generatedSql" column="generated_sql" />
+        <result property="executedSql" column="executed_sql" />
+        <result property="status" column="status" />
+        <result property="result" column="result" />
+        <result property="duration" column="execution_time" />
+        <result property="errorMessage" column="error_message" />
+        <result property="confidence" column="confidence" />
+        <result property="disambiguationQuestions" column="disambiguation_questions" />
+        <result property="involvedTables" column="involved_tables" />
+        <result property="createTime" column="create_time" />
+    </resultMap>
+
+    <sql id="selectQueryRecordVo">
+        select id, session_id, user_id, question, generated_sql, executed_sql, status, result_count, execution_time, error_message, confidence, disambiguation_questions, involved_tables, create_time 
+        from bi_query_record
+    </sql>
+
+    <select id="selectQueryRecordList" parameterType="QueryRecord" resultMap="QueryRecordResult">
+        <include refid="selectQueryRecordVo"/>
+        <where>
+            <if test="sessionId != null">and session_id = #{sessionId}</if>
+            <if test="userId != null">and user_id = #{userId}</if>
+            <if test="question != null and question != ''">and question like concat('%', #{question}, '%')</if>
+            <if test="status != null and status != ''">and status = #{status}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectQueryRecordById" parameterType="Long" resultMap="QueryRecordResult">
+        <include refid="selectQueryRecordVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertQueryRecord" parameterType="QueryRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into bi_query_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sessionId != null">session_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="question != null and question != ''">question,</if>
+            <if test="generatedSql != null">generated_sql,</if>
+            <if test="executedSql != null">executed_sql,</if>
+            <if test="confidence != null">confidence,</if>
+            <if test="disambiguationQuestions != null">disambiguation_questions,</if>
+            <if test="involvedTables != null">involved_tables,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="duration != null">execution_time,</if>
+            <if test="errorMessage != null">error_message,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sessionId != null">#{sessionId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="question != null and question != ''">#{question},</if>
+            <if test="generatedSql != null">#{generatedSql},</if>
+            <if test="executedSql != null">#{executedSql},</if>
+            <if test="confidence != null">#{confidence},</if>
+            <if test="disambiguationQuestions != null">#{disambiguationQuestions},</if>
+            <if test="involvedTables != null">#{involvedTables},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="duration != null">#{duration},</if>
+            <if test="errorMessage != null">#{errorMessage},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateQueryRecord" parameterType="QueryRecord">
+        update bi_query_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sessionId != null">session_id = #{sessionId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="question != null and question != ''">question = #{question},</if>
+            <if test="generatedSql != null">generated_sql = #{generatedSql},</if>
+            <if test="executedSql != null">executed_sql = #{executedSql},</if>
+            <if test="confidence != null">confidence = #{confidence},</if>
+            <if test="disambiguationQuestions != null">disambiguation_questions = #{disambiguationQuestions},</if>
+            <if test="involvedTables != null">involved_tables = #{involvedTables},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="duration != null">execution_time = #{duration},</if>
+            <if test="errorMessage != null">error_message = #{errorMessage},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteQueryRecordById" parameterType="Long">
+        delete from bi_query_record where id = #{id}
+    </delete>
+
+    <delete id="deleteQueryRecordByIds" parameterType="String">
+        delete from bi_query_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectRecentSuccessRecords" resultMap="QueryRecordResult">
+        <include refid="selectQueryRecordVo"/>
+        where status = 'SUCCESS' and executed_sql is not null and executed_sql != ''
+        order by create_time desc
+        limit #{limit}
+    </select>
+
+    <select id="selectSlowQueryRecords" resultMap="QueryRecordResult">
+        <include refid="selectQueryRecordVo"/>
+        where status = 'SUCCESS' and execution_time >= #{thresholdMs}
+        order by execution_time desc
+        limit #{limit}
+    </select>
+</mapper>

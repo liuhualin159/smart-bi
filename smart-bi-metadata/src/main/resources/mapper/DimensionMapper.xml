@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.lhl.metadata.mapper.DimensionMapper">
+    <resultMap type="Dimension" id="DimensionResult">
+        <result property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="code" column="code" />
+        <result property="type" column="type" />
+        <result property="fieldName" column="field_name" />
+        <result property="domainId" column="domain_id" />
+        <result property="description" column="description" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+        <result property="remark" column="remark" />
+    </resultMap>
+    <sql id="selectDimensionVo">
+        select id, name, code, type, field_name, domain_id, description, create_by, create_time, update_by, update_time, remark 
+        from bi_dimension
+    </sql>
+    <select id="selectDimensionList" parameterType="Dimension" resultMap="DimensionResult">
+        <include refid="selectDimensionVo"/>
+        <where>
+            <if test="name != null and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="code != null and code != ''">and code = #{code}</if>
+            <if test="type != null and type != ''">and type = #{type}</if>
+            <if test="domainId != null">and domain_id = #{domainId}</if>
+        </where>
+        order by create_time desc
+    </select>
+    <select id="selectDimensionById" parameterType="Long" resultMap="DimensionResult">
+        <include refid="selectDimensionVo"/>
+        where id = #{id}
+    </select>
+    <insert id="insertDimension" parameterType="Dimension" useGeneratedKeys="true" keyProperty="id">
+        insert into bi_dimension
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="code != null and code != ''">code,</if>
+            <if test="type != null and type != ''">type,</if>
+            <if test="fieldName != null">field_name,</if>
+            <if test="domainId != null">domain_id,</if>
+            <if test="description != null">description,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="code != null and code != ''">#{code},</if>
+            <if test="type != null and type != ''">#{type},</if>
+            <if test="fieldName != null">#{fieldName},</if>
+            <if test="domainId != null">#{domainId},</if>
+            <if test="description != null">#{description},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+    <update id="updateDimension" parameterType="Dimension">
+        update bi_dimension
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="code != null and code != ''">code = #{code},</if>
+            <if test="type != null and type != ''">type = #{type},</if>
+            <if test="fieldName != null">field_name = #{fieldName},</if>
+            <if test="domainId != null">domain_id = #{domainId},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <delete id="deleteDimensionById" parameterType="Long">
+        delete from bi_dimension where id = #{id}
+    </delete>
+    <delete id="deleteDimensionByIds" parameterType="String">
+        delete from bi_dimension where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

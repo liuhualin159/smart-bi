@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.lhl.metadata.mapper.FieldAliasMapper">
+    <resultMap type="dev.lhl.metadata.domain.FieldAlias" id="FieldAliasResult">
+        <result property="id" column="id" />
+        <result property="fieldId" column="field_id" />
+        <result property="alias" column="alias" />
+        <result property="source" column="source" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+        <result property="remark" column="remark" />
+    </resultMap>
+    <sql id="selectFieldAliasVo">
+        select id, field_id, alias, source, create_by, create_time, update_by, update_time, remark from bi_field_alias
+    </sql>
+    <select id="selectById" resultMap="FieldAliasResult">
+        <include refid="selectFieldAliasVo"/> where id = #{id}
+    </select>
+    <select id="selectByFieldId" resultMap="FieldAliasResult">
+        <include refid="selectFieldAliasVo"/> where field_id = #{fieldId} order by id
+    </select>
+    <select id="selectByFieldIdAndAlias" resultMap="FieldAliasResult">
+        <include refid="selectFieldAliasVo"/> where field_id = #{fieldId} and alias = #{alias} limit 1
+    </select>
+    <select id="selectByFieldIds" resultMap="FieldAliasResult">
+        <include refid="selectFieldAliasVo"/>
+        where field_id in
+        <foreach item="id" collection="fieldIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        order by field_id, id
+    </select>
+    <select id="selectByAlias" resultMap="FieldAliasResult">
+        <include refid="selectFieldAliasVo"/> where alias = #{alias}
+    </select>
+    <resultMap type="dev.lhl.metadata.domain.AliasConflictItem" id="AliasConflictItemResult">
+        <result property="tableId" column="table_id" />
+        <result property="tableName" column="table_name" />
+        <result property="fieldId" column="field_id" />
+        <result property="fieldName" column="field_name" />
+    </resultMap>
+    <select id="selectConflictItems" resultMap="AliasConflictItemResult">
+        select tm.id as table_id, tm.table_name, fm.id as field_id, fm.field_name
+        from bi_field_alias fa
+        join bi_field_metadata fm on fa.field_id = fm.id
+        join bi_table_metadata tm on fm.table_id = tm.id
+        where fa.alias = #{alias}
+        <if test="excludeFieldId != null">and fa.field_id != #{excludeFieldId}</if>
+    </select>
+    <insert id="insert" parameterType="dev.lhl.metadata.domain.FieldAlias" useGeneratedKeys="true" keyProperty="id">
+        insert into bi_field_alias (field_id, alias, source, create_by, create_time, remark)
+        values (#{fieldId}, #{alias}, #{source,jdbcType=VARCHAR}, #{createBy}, #{createTime}, #{remark})
+    </insert>
+    <update id="update" parameterType="dev.lhl.metadata.domain.FieldAlias">
+        update bi_field_alias
+        <set>
+            <if test="alias != null">alias = #{alias},</if>
+            <if test="source != null">source = #{source},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </set>
+        where id = #{id}
+    </update>
+    <delete id="deleteById" parameterType="Long">
+        delete from bi_field_alias where id = #{id}
+    </delete>
+    <delete id="deleteByFieldId" parameterType="Long">
+        delete from bi_field_alias where field_id = #{fieldId}
+    </delete>
+</mapper>

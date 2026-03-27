@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.lhl.datasource.mapper.DataSourceMapper">
+    
+    <resultMap type="DataSource" id="DataSourceResult">
+        <result property="id"            column="id"            />
+        <result property="name"          column="name"          />
+        <result property="type"          column="type"          />
+        <result property="subType"       column="sub_type"      />
+        <result property="host"          column="host"          />
+        <result property="port"          column="port"         />
+        <result property="databaseName"  column="database_name" />
+        <result property="url"           column="url"          />
+        <result property="username"      column="username"     />
+        <result property="password"      column="password"     />
+        <result property="authType"      column="auth_type"    />
+        <result property="authConfig"    column="auth_config"  />
+        <result property="status"        column="status"       />
+        <result property="createBy"      column="create_by"     />
+        <result property="createTime"    column="create_time"  />
+        <result property="updateBy"      column="update_by"    />
+        <result property="updateTime"    column="update_time"  />
+        <result property="remark"        column="remark"       />
+    </resultMap>
+
+    <sql id="selectDataSourceVo">
+        select id, name, type, sub_type, host, port, database_name, url, username, password, 
+               auth_type, auth_config, status, create_by, create_time, update_by, update_time, remark 
+        from bi_datasource
+    </sql>
+
+    <select id="selectDataSourceList" parameterType="DataSource" resultMap="DataSourceResult">
+        <include refid="selectDataSourceVo"/>
+        <where>  
+            <if test="name != null and name != ''">
+                and name like concat('%', #{name}, '%')
+            </if>
+            <if test="type != null and type != ''">
+                and type = #{type}
+            </if>
+            <if test="subType != null and subType != ''">
+                and sub_type = #{subType}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectDataSourceById" parameterType="Long" resultMap="DataSourceResult">
+        <include refid="selectDataSourceVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDataSource" parameterType="DataSource" useGeneratedKeys="true" keyProperty="id">
+        insert into bi_datasource
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="type != null and type != ''">type,</if>
+            <if test="subType != null">sub_type,</if>
+            <if test="host != null">host,</if>
+            <if test="port != null">port,</if>
+            <if test="databaseName != null">database_name,</if>
+            <if test="url != null">url,</if>
+            <if test="username != null">username,</if>
+            <if test="password != null">password,</if>
+            <if test="authType != null">auth_type,</if>
+            <if test="authConfig != null">auth_config,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="type != null and type != ''">#{type},</if>
+            <if test="subType != null">#{subType},</if>
+            <if test="host != null">#{host},</if>
+            <if test="port != null">#{port},</if>
+            <if test="databaseName != null">#{databaseName},</if>
+            <if test="url != null">#{url},</if>
+            <if test="username != null">#{username},</if>
+            <if test="password != null">#{password},</if>
+            <if test="authType != null">#{authType},</if>
+            <if test="authConfig != null">#{authConfig},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDataSource" parameterType="DataSource">
+        update bi_datasource
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="type != null and type != ''">type = #{type},</if>
+            <if test="subType != null">sub_type = #{subType},</if>
+            <if test="host != null">host = #{host},</if>
+            <if test="port != null">port = #{port},</if>
+            <if test="databaseName != null">database_name = #{databaseName},</if>
+            <if test="url != null">url = #{url},</if>
+            <if test="username != null">username = #{username},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="authType != null">auth_type = #{authType},</if>
+            <if test="authConfig != null">auth_config = #{authConfig},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDataSourceById" parameterType="Long">
+        delete from bi_datasource where id = #{id}
+    </delete>
+
+    <delete id="deleteDataSourceByIds" parameterType="String">
+        delete from bi_datasource where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
